@@ -11,33 +11,6 @@
   <script src="https://unpkg.com/react@18/umd/react.production.min.js?v=20250329" crossorigin></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js?v=20250329" crossorigin></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js?v=20250329"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
-  <script>
-    try {
-      const firebaseConfig = {
-        apiKey: "AIzaSyDmK7a4cAoFHT2fNlnt_0MerotKEYLkQIU",
-        authDomain: "nexon-admin.firebaseapp.com",
-        databaseURL: "https://nexon-admin-default-rtdb.firebaseio.com",
-        projectId: "nexon-admin",
-        storageBucket: "nexon-admin.firebasestorage.app",
-        messagingSenderId: "641077732544",
-        appId: "1:641077732544:web:6000a67fa448fc188bb925"
-      };
-      
-      firebase.initializeApp(firebaseConfig);
-      const db = firebase.database();
-      
-      const syncToFirebase = (key, data) => { 
-        db.ref(key).set(data).catch(e => console.log('Firebase sync error:', e)); 
-      };
-      
-      window.firebaseReady = true;
-    } catch(e) {
-      console.error('Firebase init error:', e);
-      window.firebaseReady = false;
-    }
-  </script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     ::-webkit-scrollbar { width: 6px; }
@@ -174,7 +147,6 @@
     };
     const save = (key, val) => { 
       try { localStorage.setItem(key, JSON.stringify(val)); } catch {} 
-      syncToFirebase(key, val);
     };
 
     // Icons
