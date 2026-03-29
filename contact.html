@@ -7,15 +7,6 @@
 
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
-    (function() {
-      try {
-        const stored = localStorage.getItem('nexon_site');
-        if (stored) applyContactUpdates(JSON.parse(stored));
-      } catch(e) { console.log('Load error:', e); }
-    })();
-  </script>
-
-  <script>
     tailwind.config = {
       theme: {
         extend: {
