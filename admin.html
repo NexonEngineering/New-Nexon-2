@@ -406,6 +406,63 @@
         return Array.isArray(data) ? data : DEFAULT_SERVICES;
       });
       const [credentials, setCredentials] = useState(() => load("nexon_credentials", { username: "admin", hash: "aa28d6e3b8d8c0c7c25a276094af8ed1667d265bc20ef3239341fb2dff646933" }));
+      
+      // Auto-logout after 2 minutes of inactivity
+      const [logoutWarning, setLogoutWarning] = useState(false);
+      const [logoutCountdown, setLogoutCountdown] = useState(30);
+      
+      useEffect(() => {
+        if (!authed) return;
+        let idleTimer, warningTimer, countdownInterval;
+        
+        const resetTimer = () => {
+          clearTimeout(idleTimer);
+          clearTimeout(warningTimer);
+          clearInterval(countdownInterval);
+          setLogoutWarning(false);
+          setLogoutCountdown(30);
+          
+          // Show warning after 90 seconds (1.5 min of 2 min total)
+          warningTimer = setTimeout(() => {
+            setLogoutWarning(true);
+            setLogoutCountdown(30);
+            countdownInterval = setInterval(() => {
+              setLogoutCountdown(prev => {
+                if (prev <= 1) {
+                  clearInterval(countdownInterval);
+                  localStorage.removeItem("nexon_session");
+                  setAuthed(false);
+                  return 0;
+                }
+                return prev - 1;
+              });
+            }, 1000);
+          }, 90000); // 90 seconds = 1.5 minutes
+          
+          // Auto logout after 2 minutes
+          idleTimer = setTimeout(() => {
+            clearInterval(countdownInterval);
+            localStorage.removeItem("nexon_session");
+            setAuthed(false);
+          }, 120000); // 2 minutes
+        };
+        
+        const events = ['mousedown', 'keydown', 'scroll', 'touchstart'];
+        events.forEach(e => window.addEventListener(e, resetTimer));
+        resetTimer();
+        
+        return () => {
+          clearTimeout(idleTimer);
+          clearTimeout(warningTimer);
+          clearInterval(countdownInterval);
+          events.forEach(e => window.removeEventListener(e, resetTimer));
+        };
+      }, [authed]);
+
+      const stayLoggedIn = () => {
+        setLogoutWarning(false);
+        setLogoutCountdown(30);
+      };
 
       const showToast = (msg) => setToast(msg);
       const persistSite = (s) => { setSite(s); save("nexon_site", s); };
@@ -417,6 +474,25 @@
       const logout = () => { localStorage.removeItem("nexon_session"); setAuthed(false); };
 
       if (!authed) return <LoginScreen onLogin={() => setAuthed(true)} />;
+
+      // Logout warning modal
+      if (logoutWarning) {
+        return (
+          <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.8)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 9999 }}>
+            <div style={{ background: "#0f172a", borderRadius: 16, padding: 32, maxWidth: 400, width: "90%", textAlign: "center", border: "1px solid #1e3a5f" }}>
+              <div style={{ width: 60, height: 60, borderRadius: "50%", background: "rgba(248,113,113,0.2)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 20px" }}>
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#f87171" strokeWidth="2"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>
+              </div>
+              <h3 style={{ color: "#f87171", fontSize: 20, fontWeight: 700, marginBottom: 8 }}>Session Expiring</h3>
+              <p style={{ color: "#94a3b8", marginBottom: 24, lineHeight: 1.6 }}>You will be logged out in <span style={{ color: "#00b4d8", fontWeight: 700 }}>{logoutCountdown}</span> seconds due to inactivity.</p>
+              <div style={{ display: "flex", gap: 12 }}>
+                <button onClick={stayLoggedIn} style={{ flex: 1, padding: "12px 20px", borderRadius: 10, border: "1px solid #1e3a5f", background: "rgba(30,58,95,0.5)", color: "#e2e8f0", fontWeight: 600, cursor: "pointer" }}>Stay Logged In</button>
+                <button onClick={logout} style={{ flex: 1, padding: "12px 20px", borderRadius: 10, border: "none", background: "#ef4444", color: "#fff", fontWeight: 600, cursor: "pointer" }}>Log Out</button>
+              </div>
+            </div>
+          </div>
+        );
+      }
 
       const unreadCount = messages.filter(m => !m.read).length;
       const navItems = [
