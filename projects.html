@@ -6,6 +6,38 @@
   <title>Projects — NEXON Engineering Services</title>
 
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDmK7a4cAoFHT2fNlnt_0MerotKEYLkQIU",
+      authDomain: "nexon-admin.firebaseapp.com",
+      databaseURL: "https://nexon-admin-default-rtdb.firebaseio.com",
+      projectId: "nexon-admin",
+      storageBucket: "nexon-admin.firebasestorage.app",
+      messagingSenderId: "641077732544",
+      appId: "1:641077732544:web:6000a67fa448fc188bb925"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    
+    let projectsData = null;
+    
+    (function() {
+      try {
+        const stored = localStorage.getItem('nexon_projects');
+        if (stored) projectsData = JSON.parse(stored);
+      } catch(e) {}
+      
+      db.ref('nexon_projects').on('value', (snapshot) => {
+        if (snapshot.val()) {
+          projectsData = snapshot.val();
+          localStorage.setItem('nexon_projects', JSON.stringify(projectsData));
+          renderProjects();
+        }
+      });
+    })();
+  </script>
   <script>
     tailwind.config = {
       theme: {
@@ -535,16 +567,36 @@
       });
     });
     
-    (function() {
-      try {
-        const stored = localStorage.getItem('nexon_site');
-        if (!stored) return;
-        const site = JSON.parse(stored);
-        if (site.pages && site.pages.projects === false) {
-          document.body.innerHTML = '<div style="display:flex;justify-content:center;align-items:center;min-height:100vh;background:#0a2463;color:#fff;font-family:sans-serif;"><p>Page under maintenance</p></div>';
-        }
-      } catch(e) {}
-    })();
+    function renderProjects() {
+      if (!projectsData || !Array.isArray(projectsData)) return;
+      
+      const container = document.getElementById('projects-container');
+      if (!container) return;
+      
+      let html = '';
+      projectsData.forEach(p => {
+        if (p.visible === false) return;
+        html += `
+          <div class="project-card bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 group">
+            <div class="relative h-56 overflow-hidden">
+              <img src="${p.image || 'https://picsum.photos/seed/' + p.id + '/640/360'}" class="w-full h-full object-cover" alt="${p.title}" onerror="this.src='https://picsum.photos/seed/project${p.id}/640/360'">
+              <div class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-sm font-medium text-navy">${p.category || 'Project'}</div>
+            </div>
+            <div class="p-6">
+              <h3 class="text-xl font-bold text-navy mb-2">${p.title}</h3>
+              <p class="text-indigo/80 mb-4">${p.description}</p>
+              <div class="flex items-center justify-between text-sm text-gray-500">
+                <span class="flex items-center gap-1"><i data-feather="user" class="w-4 h-4"></i> ${p.client || 'Client'}</span>
+                <span class="flex items-center gap-1"><i data-feather="calendar" class="w-4 h-4"></i> ${p.year || '2024'}</span>
+              </div>
+            </div>
+          </div>`;
+      });
+      container.innerHTML = html;
+      if (window.feather) feather.replace();
+    }
+    
+    setTimeout(renderProjects, 500);
   </script>
 
 </body>

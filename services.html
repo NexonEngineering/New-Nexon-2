@@ -6,6 +6,50 @@
   <title>Services — NEXON Engineering Services</title>
 
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDmK7a4cAoFHT2fNlnt_0MerotKEYLkQIU",
+      authDomain: "nexon-admin.firebaseapp.com",
+      databaseURL: "https://nexon-admin-default-rtdb.firebaseio.com",
+      projectId: "nexon-admin",
+      storageBucket: "nexon-admin.firebasestorage.app",
+      messagingSenderId: "641077732544",
+      appId: "1:641077732544:web:6000a67fa448fc188bb925"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    
+    let servicesData = null;
+    let siteData = null;
+    
+    (function() {
+      try {
+        const stored = localStorage.getItem('nexon_services');
+        if (stored) servicesData = JSON.parse(stored);
+        const storedSite = localStorage.getItem('nexon_site');
+        if (storedSite) siteData = JSON.parse(storedSite);
+      } catch(e) {}
+      
+      db.ref('nexon_services').on('value', (snapshot) => {
+        if (snapshot.val()) {
+          servicesData = snapshot.val();
+          localStorage.setItem('nexon_services', JSON.stringify(servicesData));
+          renderServices();
+        }
+      });
+      db.ref('nexon_site').on('value', (snapshot) => {
+        if (snapshot.val()) {
+          siteData = snapshot.val();
+          localStorage.setItem('nexon_site', JSON.stringify(siteData));
+          if (siteData.pages && siteData.pages.services === false) {
+            document.body.innerHTML = '<div style="display:flex;justify-content:center;align-items:center;min-height:100vh;background:#0a2463;color:#fff;font-family:sans-serif;"><p>Page under maintenance</p></div>';
+          }
+        }
+      });
+    })();
+  </script>
   <script>
     tailwind.config = {
       theme: {
@@ -575,17 +619,53 @@
       });
     });
     
-    // Sync page visibility from admin
-    (function() {
-      try {
-        const stored = localStorage.getItem('nexon_site');
-        if (!stored) return;
-        const site = JSON.parse(stored);
-        if (site.pages && site.pages.services === false) {
-          document.body.innerHTML = '<div style="display:flex;justify-content:center;align-items:center;min-height:100vh;background:#0a2463;color:#fff;font-family:sans-serif;"><p>Page under maintenance</p></div>';
-        }
-      } catch(e) {}
-    })();
+    function renderServices() {
+      if (!servicesData || !Array.isArray(servicesData)) return;
+      
+      const categories = {
+        'Electrical & Machinery': servicesData.filter(s => s.visible !== false && (s.category === 'electrical' || s.id <= 2)),
+        'Automation & Electronics': servicesData.filter(s => s.visible !== false && (s.category === 'automation' || s.id === 3)),
+        'Solar & Power': servicesData.filter(s => s.visible !== false && (s.category === 'solar' || s.id === 5)),
+        'Security Systems': servicesData.filter(s => s.visible !== false && (s.category === 'security' || s.id === 6)),
+        'Industrial Services': servicesData.filter(s => s.visible !== false && (s.category === 'industrial' || s.id >= 7))
+      };
+      
+      const iconMap = {
+        '⚙️': 'settings', '⚡': 'zap', '🔧': 'tool', '🤖': 'cpu', 
+        '🏭': 'factory', '🔌': 'plug', '☀️': 'sun', '📹': 'video',
+        '🔬': 'microscope', '📐': 'pen-tool', '💡': 'lightbulb', '🔩': 'hexagon'
+      };
+      
+      const container = document.getElementById('services-container');
+      if (!container) return;
+      
+      let html = '';
+      Object.entries(categories).forEach(([catName, services]) => {
+        if (services.length === 0) return;
+        html += `<div class="mb-20"><h2 class="text-3xl font-bold text-navy mb-10 fade-in-left">${catName}</h2><div class="grid grid-cols-1 md:grid-cols-2 gap-10">`;
+        services.forEach(s => {
+          const iconName = iconMap[s.icon] || 'zap';
+          html += `
+            <div class="service-card bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 group">
+              <div class="relative h-48 overflow-hidden">
+                ${s.image ? `<img src="${s.image}" class="w-full h-full object-cover" alt="${s.title}">` : `<div class="w-full h-full bg-gradient-to-br from-royal to-indigo flex items-center justify-center"><i data-feather="${iconName}" class="w-12 h-12 text-pearl"></i></div>`}
+                <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+              </div>
+              <div class="p-6">
+                <h3 class="text-xl font-bold text-navy mb-2">${s.title}</h3>
+                <p class="text-gray-600">${s.description}</p>
+                <a href="contact.html" class="inline-flex items-center gap-2 mt-4 text-royal font-medium hover:gap-3 transition-all">Get Service <i data-feather="arrow-right" class="w-4 h-4"></i></a>
+              </div>
+            </div>`;
+        });
+        html += '</div></div>';
+      });
+      container.innerHTML = html;
+      if (window.feather) feather.replace();
+    }
+    
+    // Run on load
+    setTimeout(renderServices, 500);
   </script>
 
 </body>

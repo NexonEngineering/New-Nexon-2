@@ -7,6 +7,71 @@
   <title>NEXON Engineering Services — Home</title>
 
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDmK7a4cAoFHT2fNlnt_0MerotKEYLkQIU",
+      authDomain: "nexon-admin.firebaseapp.com",
+      databaseURL: "https://nexon-admin-default-rtdb.firebaseio.com",
+      projectId: "nexon-admin",
+      storageBucket: "nexon-admin.firebasestorage.app",
+      messagingSenderId: "641077732544",
+      appId: "1:641077732544:web:6000a67fa448fc188bb925"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    
+    // Load data from Firebase and localStorage
+    let siteData = null;
+    let servicesData = null;
+    let projectsData = null;
+    let clientsData = null;
+    
+    // First load from localStorage, then update from Firebase
+    (function() {
+      try {
+        const stored = localStorage.getItem('nexon_site');
+        if (stored) siteData = JSON.parse(stored);
+        const storedServices = localStorage.getItem('nexon_services');
+        if (storedServices) servicesData = JSON.parse(storedServices);
+        const storedProjects = localStorage.getItem('nexon_projects');
+        if (storedProjects) projectsData = JSON.parse(storedProjects);
+        const storedClients = localStorage.getItem('nexon_clients');
+        if (storedClients) clientsData = JSON.parse(storedClients);
+      } catch(e) {}
+      
+      // Listen for Firebase changes in real-time
+      db.ref('nexon_site').on('value', (snapshot) => {
+        if (snapshot.val()) {
+          siteData = snapshot.val();
+          localStorage.setItem('nexon_site', JSON.stringify(siteData));
+          applySiteUpdates();
+        }
+      });
+      db.ref('nexon_services').on('value', (snapshot) => {
+        if (snapshot.val()) {
+          servicesData = snapshot.val();
+          localStorage.setItem('nexon_services', JSON.stringify(servicesData));
+          applyServicesUpdates();
+        }
+      });
+      db.ref('nexon_projects').on('value', (snapshot) => {
+        if (snapshot.val()) {
+          projectsData = snapshot.val();
+          localStorage.setItem('nexon_projects', JSON.stringify(projectsData));
+          applyProjectsUpdates();
+        }
+      });
+      db.ref('nexon_clients').on('value', (snapshot) => {
+        if (snapshot.val()) {
+          clientsData = snapshot.val();
+          localStorage.setItem('nexon_clients', JSON.stringify(clientsData));
+          applyClientsUpdates();
+        }
+      });
+    })();
+  </script>
   <script>
     tailwind.config = {
       theme: {
@@ -289,41 +354,45 @@
   <script src="scripts.js"></script>
   <script>feather.replace();</script>
   
-  <!-- Admin Sync Script -->
+  <!-- Apply Firebase Updates -->
   <script>
-    (function() {
-      try {
-        const stored = localStorage.getItem('nexon_site');
-        if (!stored) return;
-        const site = JSON.parse(stored);
-        
-        // Update logo
-        if (site.logo) {
-          const logos = document.querySelectorAll('#main-logo, .site-logo');
-          logos.forEach(img => {
-            if (img.tagName === 'IMG') img.src = site.logo;
-          });
-        }
-        
-        // Update company name
-        if (site.companyName) {
-          document.title = site.companyName + ' — Home';
-        }
-        
-        // Update stats
-        if (site.stats) {
-          const statElements = document.querySelectorAll('[data-stat]');
-          statElements.forEach(el => {
-            const key = el.getAttribute('data-stat');
-            if (site.stats[key]) el.textContent = site.stats[key];
-          });
-        }
-      // Check page visibility
-        if (site.pages && site.pages.home === false) {
-          document.body.innerHTML = '<div style="display:flex;justify-content:center;align-items:center;min-height:100vh;background:#0a2463;color:#fff;font-family:sans-serif;"><p>Page under maintenance</p></div>';
-        }
-      } catch(e) { console.log('Sync error:', e); }
-    })();
+    function applySiteUpdates() {
+      if (!siteData) return;
+      
+      // Update logo
+      if (siteData.logo) {
+        const logos = document.querySelectorAll('#main-logo, .site-logo');
+        logos.forEach(img => {
+          if (img.tagName === 'IMG') img.src = siteData.logo;
+        });
+      }
+      
+      // Update company name
+      if (siteData.companyName) {
+        document.title = siteData.companyName + ' — Home';
+      }
+      
+      // Update stats
+      if (siteData.stats) {
+        const statElements = document.querySelectorAll('[data-stat]');
+        statElements.forEach(el => {
+          const key = el.getAttribute('data-stat');
+          if (siteData.stats[key]) el.textContent = siteData.stats[key];
+        });
+      }
+      
+      // Page visibility
+      if (siteData.pages && siteData.pages.home === false) {
+        document.body.innerHTML = '<div style="display:flex;justify-content:center;align-items:center;min-height:100vh;background:#0a2463;color:#fff;font-family:sans-serif;"><p>Page under maintenance</p></div>';
+      }
+    }
+    
+    function applyServicesUpdates() { /* Services handled in services.html */ }
+    function applyProjectsUpdates() { /* Projects handled in projects.html */ }
+    function applyClientsUpdates() { /* Clients handled in clients.html */ }
+    
+    // Run on load
+    setTimeout(applySiteUpdates, 500);
   </script>
 </body>
 </html>

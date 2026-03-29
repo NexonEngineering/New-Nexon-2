@@ -11,6 +11,22 @@
   <script src="https://unpkg.com/react@18/umd/react.production.min.js?v=20250329" crossorigin></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js?v=20250329" crossorigin></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js?v=20250329"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDmK7a4cAoFHT2fNlnt_0MerotKEYLkQIU",
+      authDomain: "nexon-admin.firebaseapp.com",
+      databaseURL: "https://nexon-admin-default-rtdb.firebaseio.com",
+      projectId: "nexon-admin",
+      storageBucket: "nexon-admin.firebasestorage.app",
+      messagingSenderId: "641077732544",
+      appId: "1:641077732544:web:6000a67fa448fc188bb925"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    const syncToFirebase = (key, data) => { db.ref(key).set(data).catch(e => console.log('Firebase sync error:', e)); };
+  </script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     ::-webkit-scrollbar { width: 6px; }
@@ -80,14 +96,14 @@
     };
 
     const DEFAULT_SERVICES = [
-      { id: 1, title: "Industrial Motor Repair", description: "Complete rewinding, repair and overhaul of AC/DC industrial motors of all sizes.", icon: "⚙️", image: "images/service-machine-repair.png", visible: true },
-      { id: 2, title: "Electrical Panel Installation", description: "Design and installation of MCC, PCC and distribution panels for industrial use.", icon: "⚡", image: "images/service-electrical-wiring.png", visible: true },
-      { id: 3, title: "PLC & Automation", description: "PLC programming, SCADA setup and full automation solutions for production lines.", icon: "🤖", image: "images/service-automation.png", visible: true },
-      { id: 4, title: "Preventive Maintenance", description: "Scheduled maintenance programs to maximise uptime and equipment longevity.", icon: "🔧", image: "images/service-electronics.png", visible: true },
-      { id: 5, title: "Solar Installation", description: "Rooftop and ground-mounted solar systems with battery backup solutions.", icon: "☀️", image: "images/service-solar.jpg", visible: true },
-      { id: 6, title: "CCTV & Security", description: "IP camera installation, NVR setup and remote monitoring systems.", icon: "📹", image: "images/service-cctv.png", visible: true },
-      { id: 7, title: "Machine Servicing", description: "Comprehensive machine maintenance and breakdown services for all industrial equipment.", icon: "🏭", image: "images/service-fabrication.png", visible: true },
-      { id: 8, title: "Industrial Wiring", description: "Complete electrical wiring solutions for factories, warehouses and commercial buildings.", icon: "🔌", image: "images/service-industrial.png", visible: true },
+      { id: 1, title: "Industrial Motor Repair", description: "Complete rewinding, repair and overhaul of AC/DC industrial motors of all sizes.", icon: "⚙️", image: "images/service-machine-repair.png", category: "electrical", visible: true },
+      { id: 2, title: "Electrical Panel Installation", description: "Design and installation of MCC, PCC and distribution panels for industrial use.", icon: "⚡", image: "images/service-electrical-wiring.png", category: "electrical", visible: true },
+      { id: 3, title: "PLC & Automation", description: "PLC programming, SCADA setup and full automation solutions for production lines.", icon: "🤖", image: "images/service-automation.png", category: "automation", visible: true },
+      { id: 4, title: "Preventive Maintenance", description: "Scheduled maintenance programs to maximise uptime and equipment longevity.", icon: "🔧", image: "images/service-electronics.png", category: "industrial", visible: true },
+      { id: 5, title: "Solar Installation", description: "Rooftop and ground-mounted solar systems with battery backup solutions.", icon: "☀️", image: "images/service-solar.jpg", category: "solar", visible: true },
+      { id: 6, title: "CCTV & Security", description: "IP camera installation, NVR setup and remote monitoring systems.", icon: "📹", image: "images/service-cctv.png", category: "security", visible: true },
+      { id: 7, title: "Machine Servicing", description: "Comprehensive machine maintenance and breakdown services for all industrial equipment.", icon: "🏭", image: "images/service-fabrication.png", category: "industrial", visible: true },
+      { id: 8, title: "Industrial Wiring", description: "Complete electrical wiring solutions for factories, warehouses and commercial buildings.", icon: "🔌", image: "images/service-industrial.png", category: "electrical", visible: true },
     ];
 
     const DEFAULT_PROJECTS = [
@@ -128,10 +144,11 @@
           localStorage.setItem(key, JSON.stringify({...def, _version: DATA_VERSION}));
           return {...def, _version: DATA_VERSION};
         }
-        // Check if services array has images - reset if not
+        // Check if services array has images and categories - reset if not
         if (key === "nexon_services" && Array.isArray(data)) {
           const hasImages = data.some(s => s.image);
-          if (!hasImages) {
+          const hasCategories = data.some(s => s.category);
+          if (!hasImages || !hasCategories) {
             localStorage.setItem(key, JSON.stringify({...def, _version: DATA_VERSION}));
             return {...def, _version: DATA_VERSION};
           }
@@ -142,7 +159,10 @@
         return {...def, _version: DATA_VERSION};
       } 
     };
-    const save = (key, val) => { try { localStorage.setItem(key, JSON.stringify(val)); } catch {} };
+    const save = (key, val) => { 
+      try { localStorage.setItem(key, JSON.stringify(val)); } catch {} 
+      syncToFirebase(key, val);
+    };
 
     // Icons
     const Icon = ({ name, size = 18, className = "" }) => {
