@@ -170,7 +170,7 @@
           </div>
 
           <!-- Google Maps -->
-          <div class="bg-white shadow-xl rounded-2xl p-6 hover:shadow-2xl transition-all duration-500">
+          <div class="bg-white shadow-xl rounded-2xl p-6 hover:shadow-2xl transition-all duration-500 map-section">
             <h3 class="text-xl font-bold text-navy mb-4 flex items-center gap-3">
               <span class="w-10 h-10 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-xl flex items-center justify-center">
                 <i data-feather="map-pin" class="w-5 h-5 text-pearl"></i>
@@ -417,6 +417,20 @@
     function closePopup() {
       document.getElementById('success-popup').classList.add('hidden');
     }
+    
+    // Check location visibility from admin settings
+    (function() {
+      try {
+        const stored = localStorage.getItem('nexon_site');
+        if (stored) {
+          const site = JSON.parse(stored);
+          if (site.contact && site.contact.locationVisible === false) {
+            const mapSection = document.querySelector('.map-section');
+            if (mapSection) mapSection.style.display = 'none';
+          }
+        }
+      } catch(e) {}
+    })();
   </script>
 </body>
 </html>

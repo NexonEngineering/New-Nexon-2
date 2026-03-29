@@ -67,6 +67,7 @@
         instagram: "",
         address: "WVP9+FGX, Colombo 01000, Colombo 10, Sri Lanka",
         mapsUrl: "",
+        locationVisible: true,
       },
       pages: {
         home: { visible: true, heroTitle: "Engineering Innovation with Precision", heroSubtitle: "Industrial repair, maintenance, and automation services.", heroImage: "https://raw.githubusercontent.com/NexonEngineering/nexonengineering.github.io/refs/heads/main/Gemini_Generated_Image_hmrljuhmrljuhmrl-Photoroom1215.png", aboutTitle: "About NEXON Engineering", aboutText: "Nexon Engineering is a trusted provider of industrial repair, maintenance, and automation services.", aboutImage: "https://raw.githubusercontent.com/NexonEngineering/nexonengineering.github.io/refs/heads/main/Gemini_Generated_Image_e9zrb2e9zrb2e9zr12.png" },
@@ -955,6 +956,13 @@
                 <Field label="Instagram URL" value={local.contact.instagram} onChange={v => upd("contact.instagram", v)} />
               </div>
               <Field label="Address" value={local.contact.address} onChange={v => upd("contact.address", v)} rows={2} />
+              <div style={{ marginTop: 16, padding: "16px", background: "#0f172a", borderRadius: 12, border: "1px solid #1e3a5f", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                <div>
+                  <span style={{ color: "#e2e8f0", fontWeight: 600, display: "block", marginBottom: 4 }}>Google Map Location</span>
+                  <span style={{ color: "#64748b", fontSize: 12 }}>Show/hide the map on contact page</span>
+                </div>
+                <Toggle checked={local.contact.locationVisible} onChange={() => upd("contact.locationVisible", !local.contact.locationVisible)} />
+              </div>
               <button className="btn-primary" onClick={() => saveSite("Contact")}><Icon name="save" size={14} /> Save Contact Info</button>
             </Card>
             <Card>
