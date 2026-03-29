@@ -492,10 +492,15 @@
         { id: '5', name: 'Client 5', logo: 'images/client-5.png', website: '' },
         { id: '6', name: 'Client 6', logo: 'images/client-6.png', website: '' }
       ],
-      messages: []
+      messages: [],
+      version: 2
     };
 
-    let data = JSON.parse(localStorage.getItem('nexon_admin_data')) || JSON.parse(JSON.stringify(DEFAULT_DATA));
+    let data = JSON.parse(localStorage.getItem('nexon_admin_data'));
+    if (!data || data.version !== 2) {
+      data = JSON.parse(JSON.stringify(DEFAULT_DATA));
+      localStorage.setItem('nexon_admin_data', JSON.stringify(data));
+    }
 
     function saveData() {
       localStorage.setItem('nexon_admin_data', JSON.stringify(data));
