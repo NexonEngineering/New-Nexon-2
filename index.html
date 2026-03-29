@@ -93,12 +93,8 @@
         </div>
       </a>
 
-      <div class="hidden md:flex space-x-8 text-pearl font-medium nav-links">
-        <a href="about.html" class="hover:text-[#8FC1FA]">About</a>
-        <a href="services.html" class="hover:text-[#8FC1FA]">Services</a>
-        <a href="projects.html" class="hover:text-[#8FC1FA]">Projects</a>
-        <a href="our-clients.html" class="hover:text-[#8FC1FA]">Our Clients</a>
-        <a href="contact.html" class="hover:text-[#8FC1FA]">Contact</a>
+      <div id="dynamic-nav" class="hidden md:flex space-x-8 text-pearl font-medium nav-links">
+        <!-- Navigation links will be loaded dynamically -->
       </div>
 
       <a href="contact.html" class="hidden md:inline-flex items-center gap-2 px-5 py-2.5 bg-royal/80 hover:bg-royal text-pearl rounded-full text-sm font-medium transition-all duration-300 hover:shadow-lg hover:shadow-royal/30">
@@ -112,11 +108,9 @@
     </div>
 
     <div id="mobile-menu" class="hidden bg-navy/95 backdrop-blur-lg text-pearl px-6 py-6 space-y-4 md:hidden border-t border-white/10">
-      <a href="about.html" class="block">About</a>
-      <a href="services.html" class="block">Services</a>
-      <a href="projects.html" class="block">Projects</a>
-      <a href="our-clients.html" class="block">Our Clients</a>
-      <a href="contact.html" class="block">Contact</a>
+      <div id="dynamic-mobile-nav">
+        <!-- Mobile navigation links will be loaded dynamically -->
+      </div>
       <a href="contact.html" class="inline-flex items-center gap-2 mt-4 px-5 py-2.5 bg-royal text-pearl rounded-full text-sm font-medium">
         <i data-feather="phone" class="w-4 h-4"></i>
         Get Quote
@@ -291,6 +285,7 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+  <script src="navigation.js"></script>
   <script src="scripts.js"></script>
   <script>feather.replace();</script>
 </body>
