@@ -382,7 +382,10 @@
       const [site, setSite] = useState(() => load("nexon_site", DEFAULT_SITE));
       const [projects, setProjects] = useState(() => load("nexon_projects", DEFAULT_PROJECTS));
       const [clients, setClients] = useState(() => load("nexon_clients", DEFAULT_CLIENTS));
-      const [messages, setMessages] = useState(() => load("nexon_messages", DEFAULT_MESSAGES));
+      const [messages, setMessages] = useState(() => {
+        const data = load("nexon_messages", DEFAULT_MESSAGES);
+        return Array.isArray(data) ? data : DEFAULT_MESSAGES;
+      });
       const [services, setServices] = useState(() => load("nexon_services", DEFAULT_SERVICES));
       const [credentials, setCredentials] = useState(() => load("nexon_credentials", { username: "admin", hash: "aa28d6e3b8d8c0c7c25a276094af8ed1667d265bc20ef3239341fb2dff646933" }));
 
