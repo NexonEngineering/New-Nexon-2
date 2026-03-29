@@ -114,12 +114,11 @@
     const DEFAULT_MESSAGES = [];
 
     // Storage Helpers
-    const DATA_VERSION = 2;
+    const DATA_VERSION = 3;
     const load = (key, def) => { 
       try { 
         const v = localStorage.getItem(key); 
         const data = v ? JSON.parse(v) : null;
-        // Validate data type - if it's supposed to be array but isn't, reset
         const isArray = Array.isArray(def);
         if (!data) {
           localStorage.setItem(key, JSON.stringify({...def, _version: DATA_VERSION}));
@@ -128,6 +127,14 @@
         if (isArray && !Array.isArray(data)) {
           localStorage.setItem(key, JSON.stringify({...def, _version: DATA_VERSION}));
           return {...def, _version: DATA_VERSION};
+        }
+        // Check if services array has images - reset if not
+        if (key === "nexon_services" && Array.isArray(data)) {
+          const hasImages = data.some(s => s.image);
+          if (!hasImages) {
+            localStorage.setItem(key, JSON.stringify({...def, _version: DATA_VERSION}));
+            return {...def, _version: DATA_VERSION};
+          }
         }
         return data;
       } catch { 
