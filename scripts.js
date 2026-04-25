@@ -175,24 +175,64 @@ document.addEventListener("DOMContentLoaded", function() {
     });
   });
 
-  // Magnetic/Tilt effect for elements with .tilt class
-  document.querySelectorAll(".tilt, .glass-card, .service-card").forEach(card => {
-    card.addEventListener("mousemove", (e) => {
-      const rect = card.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
+  // High-Performance 3D Tilt Effect
+  const tiltElements = document.querySelectorAll(".tilt, .glass-card, .service-card, .project-card");
+  
+  tiltElements.forEach(card => {
+    let rect;
+    let isTilting = false;
+    let requestRef;
+
+    let mouseX = 0, mouseY = 0;
+
+    const updateTilt = () => {
+      if (!isTilting) return;
+      if (!rect) rect = card.getBoundingClientRect();
+      
+      const x = mouseX - rect.left;
+      const y = mouseY - rect.top;
       const centerX = rect.width / 2;
       const centerY = rect.height / 2;
-      const rotateX = (y - centerY) / 10; // More pronounced
-      const rotateY = (centerX - x) / 10;
+      
+      // Calculate rotation (max 15 degrees)
+      const rotateX = ((y - centerY) / centerY) * -10; 
+      const rotateY = ((x - centerX) / centerX) * 10;
       
       card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.05, 1.05, 1.05)`;
-      card.style.boxShadow = `${-rotateY * 2}px ${rotateX * 2}px 30px rgba(30, 136, 229, 0.3)`;
+      card.style.boxShadow = `${-rotateY * 2}px ${rotateX * 2}px 40px rgba(30, 136, 229, 0.25)`;
+      
+      const inner = card.querySelector('i, .icon-container, img');
+      if (inner) {
+        inner.style.transform = `translateZ(50px) translateX(${rotateY * 2}px) translateY(${rotateX * -2}px)`;
+      }
+      
+      requestRef = requestAnimationFrame(updateTilt);
+    };
+
+    card.addEventListener("mouseenter", () => {
+      rect = card.getBoundingClientRect();
+      card.style.transition = "transform 0.1s ease-out, box-shadow 0.1s ease-out";
+      isTilting = true;
+      requestRef = requestAnimationFrame(updateTilt);
+    });
+
+    card.addEventListener("mousemove", (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
     });
     
     card.addEventListener("mouseleave", () => {
+      isTilting = false;
+      if (requestRef) cancelAnimationFrame(requestRef);
+      card.style.transition = "all 0.6s cubic-bezier(0.23, 1, 0.32, 1)";
       card.style.transform = "perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)";
       card.style.boxShadow = "none";
+      
+      const inner = card.querySelector('i, .icon-container, img');
+      if (inner) {
+        inner.style.transform = "translateZ(0) translateX(0) translateY(0)";
+        inner.style.transition = "all 0.6s ease";
+      }
     });
   });
 
@@ -203,8 +243,8 @@ document.addEventListener("DOMContentLoaded", function() {
       particlesJS("particles-js", {
         "particles": {
           "number": {
-            "value": 120,
-            "density": { "enable": true, "value_area": 500 }
+            "value": 80,
+            "density": { "enable": true, "value_area": 800 }
           },
           "color": { "value": "#ffffff" },
           "shape": { "type": "circle" },
