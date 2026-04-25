@@ -443,13 +443,7 @@
         };
       }, [authed]);
 
-      // Persistence helpers (push to Firebase)
-      const persistSite = (s) => db.ref("site").set(s);
-      const persistProjects = (p) => db.ref("projects").set(p);
-      const persistClients = (c) => db.ref("clients").set(c);
-      const persistMessages = (m) => db.ref("messages").set(m);
-      const persistServices = (s) => db.ref("services").set(s);
-      const persistCredentials = (c) => db.ref("credentials").set(c);
+      // Persistence helpers are defined below (after idle timer) to avoid duplicate const declarations
       
       useEffect(() => {
         if (!authed) return;
@@ -505,12 +499,13 @@
       };
 
       const showToast = (msg) => setToast(msg);
-      const persistSite = (s) => { setSite(s); save("nexon_site", s); };
-      const persistProjects = (p) => { setProjects(p); save("nexon_projects", p); };
-      const persistClients = (c) => { setClients(c); save("nexon_clients", c); };
-      const persistMessages = (m) => { setMessages(m); save("nexon_messages", m); };
-      const persistServices = (s) => { setServices(s); save("nexon_services", s); };
-      const persistCredentials = (c) => { setCredentials(c); save("nexon_credentials", c); };
+      // Unified persist helpers: write to Firebase (primary) + update local state
+      const persistSite = (s) => { setSite(s); db.ref("site").set(s); };
+      const persistProjects = (p) => { setProjects(p); db.ref("projects").set(p); };
+      const persistClients = (c) => { setClients(c); db.ref("clients").set(c); };
+      const persistMessages = (m) => { setMessages(m); db.ref("messages").set(m); };
+      const persistServices = (s) => { setServices(s); db.ref("services").set(s); };
+      const persistCredentials = (c) => { setCredentials(c); db.ref("credentials").set(c); };
       const logout = () => { 
         localStorage.removeItem("nexon_session"); 
         setAuthed(false); 
