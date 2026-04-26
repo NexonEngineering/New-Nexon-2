@@ -4,7 +4,6 @@
  */
 
 // Your web app's Firebase configuration
-// REPLACE THE BELOW PLACEHOLDERS WITH YOUR ACTUAL FIREBASE CONFIG
 const firebaseConfig = {
   apiKey: "AIzaSyDmK7a4cAoFHT2fNlnt_0MerotKEYLkQIU",
   authDomain: "nexon-admin.firebaseapp.com",
@@ -21,10 +20,49 @@ if (!firebase.apps.length) {
 }
 
 const db = firebase.database();
+const auth = firebase.auth();
+
+// Firebase Auth Providers
+const googleProvider = new firebase.auth.GoogleAuthProvider();
+const emailProvider = new firebase.auth.EmailAuthProvider();
+
+/**
+ * Sign in with Google
+ */
+function signInWithGoogle() {
+  return auth.signInWithPopup(googleProvider);
+}
+
+/**
+ * Sign in with Email/Password
+ */
+function signInWithEmail(email, password) {
+  return auth.signInWithEmailAndPassword(email, password);
+}
+
+/**
+ * Sign out
+ */
+function signOut() {
+  return auth.signOut();
+}
+
+/**
+ * Get current user
+ */
+function getCurrentUser() {
+  return auth.currentUser;
+}
+
+/**
+ * Auth state listener
+ */
+function onAuthStateChanged(callback) {
+  return auth.onAuthStateChanged(callback);
+}
 
 /**
  * Global Real-time Sync Helper
- * Listens to a path in Firebase and executes a callback on every update.
  */
 function syncWithFirebase(path, callback) {
   const ref = db.ref(path);
@@ -37,7 +75,7 @@ function syncWithFirebase(path, callback) {
 }
 
 /**
- * Write data to Firebase - for admin portal to sync changes
+ * Write data to Firebase
  */
 function writeToFirebase(path, data) {
   return db.ref(path).set(data);
@@ -59,9 +97,7 @@ function trackVisitors() {
   
   connectedRef.on('value', (snap) => {
     if (snap.val() === true) {
-      // Add a new session
       const con = visitorRef.push();
-      // Remove the session when disconnected
       con.onDisconnect().remove();
       con.set(true);
     }

@@ -8,6 +8,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>NEXON Admin Dashboard</title>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+  
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+  <script src="firebase-config.js"></script>
+  
   <script src="https://unpkg.com/react@18/umd/react.production.min.js?v=20250329" crossorigin></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js?v=20250329" crossorigin></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js?v=20250329"></script>
@@ -164,16 +171,19 @@
     };
     const save = (key, val) => { 
       try { localStorage.setItem(key, JSON.stringify(val)); } catch {} 
-      // Also sync to Firebase for real-time updates on website
-      try {
-        const fbKey = key.replace('nexon_', '');
-        if (typeof writeToFirebase === 'function') {
-          writeToFirebase(fbKey, val);
-        }
-      } catch(e) { console.log('Firebase sync:', e); }
+      // Check if user is authenticated via Firebase before writing to Firebase
+      const session = load("nexon_session", null);
+      if (session && session.auth === 'firebase') {
+        try {
+          const fbKey = key.replace('nexon_', '');
+          if (typeof writeToFirebase === 'function') {
+            writeToFirebase(fbKey, val);
+          }
+        } catch(e) { console.log('Firebase sync:', e); }
+      }
     };
     
-    // Write to both localStorage and Firebase
+    // Write to both localStorage and Firebase (only if authenticated)
     const saveWithFirebase = (key, val) => {
       try { localStorage.setItem(key, JSON.stringify(val)); } catch {} 
       try {
@@ -370,18 +380,35 @@
       const [user, setUser] = useState("");
       const [pass, setPass] = useState("");
       const [error, setError] = useState("");
-      const [loading, setLoading] = useState(false);
+const [loading, setLoading] = useState(false);
 
-      const handleLogin = () => {
+      const handleLogin = async () => {
         if (!user || !pass) { setError("Please enter credentials"); return; }
         setLoading(true); setError("");
         
-        if (user === "admin" && pass === "nexon2025") {
-          save("nexon_session", { user, time: Date.now() });
-          onLogin();
-        } else {
-          setError("Invalid username or password");
-          setLoading(false);
+        try {
+          // Try Firebase Auth first
+          if (typeof firebase !== 'undefined' && firebase.auth) {
+            await firebase.auth().signInWithEmailAndPassword(user + '@nexonadmin.com', pass);
+            save("nexon_session", { user, time: Date.now(), auth: 'firebase' });
+            onLogin();
+          } else {
+            // Fallback to simple check if Firebase not available
+            if (user === "admin" && pass === "nexon2025") {
+              save("nexon_session", { user, time: Date.now() });
+              onLogin();
+            } else {
+              setError("Invalid username or password");
+            }
+          }
+        } catch (e) {
+          // Fallback to simple check
+          if (user === "admin" && pass === "nexon2025") {
+            save("nexon_session", { user, time: Date.now() });
+            onLogin();
+          } else {
+            setError("Invalid username or password");
+          }
         }
         setLoading(false);
       };
