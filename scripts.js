@@ -21,6 +21,35 @@ document.addEventListener("DOMContentLoaded", function() {
     cursor.style.opacity = "1";
   });
 
+  // Dotted cursor trail
+  const trailDots = [];
+  const trailLength = 15;
+  for (let i = 0; i < trailLength; i++) {
+    const dot = document.createElement("div");
+    dot.className = "cursor-trail";
+    dot.style.opacity = (1 - i / trailLength) * 0.6;
+    dot.style.transform = `scale(${1 - i / trailLength})`;
+    dot.style.transition = "left 0.15s, top 0.15s";
+    document.body.appendChild(dot);
+    trailDots.push(dot);
+  }
+  let mouseX = 0, mouseY = 0;
+  document.addEventListener("mousemove", (e) => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+  });
+  setInterval(() => {
+    trailDots.forEach((dot, i) => {
+      if (i === 0) {
+        dot.style.left = mouseX - 4 + "px";
+        dot.style.top = mouseY - 4 + "px";
+      } else {
+        dot.style.left = parseInt(trailDots[i-1].style.left) + "px";
+        dot.style.top = parseInt(trailDots[i-1].style.top) + "px";
+      }
+    });
+  }, 30);
+
   document.querySelectorAll("a, button, .clickable").forEach(el => {
     el.addEventListener("mouseenter", () => cursor.classList.add("active"));
     el.addEventListener("mouseleave", () => cursor.classList.remove("active"));
