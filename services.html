@@ -654,7 +654,7 @@
       // Sync with Firebase
       try {
         if (typeof syncWithFirebase === 'function') {
-          syncWithFirebase('services', syncServicesFromFirebase);
+          syncWithFirebase('nexon_services', syncServicesFromFirebase);
         }
       } catch(e) {}
     }, 500);

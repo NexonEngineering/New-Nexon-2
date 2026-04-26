@@ -419,7 +419,7 @@
       renderProjects();
       try {
         if (typeof syncWithFirebase === 'function') {
-          syncWithFirebase('projects', syncProjectsFromFirebase);
+          syncWithFirebase('nexon_projects', syncProjectsFromFirebase);
         }
       } catch(e) {}
     }, 800);
