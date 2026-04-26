@@ -117,6 +117,8 @@
 
     // Storage Helpers
     const DATA_VERSION = 3;
+    
+    // Load from localStorage first, then try Firebase for real-time data
     const load = (key, def) => { 
       try { 
         const v = localStorage.getItem(key); 
@@ -145,8 +147,41 @@
         return {...def, _version: DATA_VERSION};
       } 
     };
+    
+    // Sync with Firebase on load - update localStorage with Firebase data
+    const syncFromFirebase = (key, def, callback) => {
+      const fbKey = key.replace('nexon_', '');
+      if (typeof syncWithFirebase === 'function') {
+        syncWithFirebase(fbKey, (data) => {
+          if (data) {
+            try {
+              localStorage.setItem(key, JSON.stringify(data));
+              callback(data);
+            } catch(e) {}
+          }
+        });
+      }
+    };
     const save = (key, val) => { 
       try { localStorage.setItem(key, JSON.stringify(val)); } catch {} 
+      // Also sync to Firebase for real-time updates on website
+      try {
+        const fbKey = key.replace('nexon_', '');
+        if (typeof writeToFirebase === 'function') {
+          writeToFirebase(fbKey, val);
+        }
+      } catch(e) { console.log('Firebase sync:', e); }
+    };
+    
+    // Write to both localStorage and Firebase
+    const saveWithFirebase = (key, val) => {
+      try { localStorage.setItem(key, JSON.stringify(val)); } catch {} 
+      try {
+        const fbKey = key.replace('nexon_', '');
+        if (typeof writeToFirebase === 'function') {
+          writeToFirebase(fbKey, val);
+        }
+      } catch(e) { console.log('Firebase sync:', e); }
     };
 
     // Icons
@@ -413,6 +448,32 @@
       });
       const [credentials, setCredentials] = useState(() => load("nexon_credentials", { username: "admin", hash: "aa28d6e3b8d8c0c7c25a276094af8ed1667d265bc20ef3239341fb2dff646933" }));
       
+      // Sync data from Firebase on first load
+      useEffect(() => {
+        if (!authed) return;
+        
+        const fbLoad = (key, callback) => {
+          const fbKey = key.replace('nexon_', '');
+          if (typeof syncWithFirebase === 'function') {
+            syncWithFirebase(fbKey, (data) => {
+              if (data) {
+                try {
+                  localStorage.setItem(key, JSON.stringify(data));
+                  callback(data);
+                } catch(e) {}
+              }
+            });
+          }
+        };
+        
+        // Sync each data type from Firebase
+        fbLoad("nexon_site", (data) => setSite(data));
+        fbLoad("nexon_projects", (data) => setProjects(Array.isArray(data) ? data : DEFAULT_PROJECTS));
+        fbLoad("nexon_clients", (data) => setClients(Array.isArray(data) ? data : DEFAULT_CLIENTS));
+        fbLoad("nexon_services", (data) => setServices(Array.isArray(data) ? data : DEFAULT_SERVICES));
+        fbLoad("nexon_messages", (data) => setMessages(Array.isArray(data) ? data : DEFAULT_MESSAGES));
+      }, [authed]);
+      
       // Auto-logout after 2 minutes of inactivity
       const [logoutWarning, setLogoutWarning] = useState(false);
       const [logoutCountdown, setLogoutCountdown] = useState(30);
@@ -471,12 +532,12 @@
       };
 
       const showToast = (msg) => setToast(msg);
-      const persistSite = (s) => { setSite(s); save("nexon_site", s); };
-      const persistProjects = (p) => { setProjects(p); save("nexon_projects", p); };
-      const persistClients = (c) => { setClients(c); save("nexon_clients", c); };
-      const persistMessages = (m) => { setMessages(m); save("nexon_messages", m); };
-      const persistServices = (s) => { setServices(s); save("nexon_services", s); };
-      const persistCredentials = (c) => { setCredentials(c); save("nexon_credentials", c); };
+      const persistSite = (s) => { setSite(s); saveWithFirebase("nexon_site", s); };
+      const persistProjects = (p) => { setProjects(p); saveWithFirebase("nexon_projects", p); };
+      const persistClients = (c) => { setClients(c); saveWithFirebase("nexon_clients", c); };
+      const persistMessages = (m) => { setMessages(m); saveWithFirebase("nexon_messages", m); };
+      const persistServices = (s) => { setServices(s); saveWithFirebase("nexon_services", s); };
+      const persistCredentials = (c) => { setCredentials(c); saveWithFirebase("nexon_credentials", c); };
       const logout = () => { 
         localStorage.removeItem("nexon_session"); 
         setAuthed(false); 
