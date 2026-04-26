@@ -469,9 +469,13 @@ const [loading, setLoading] = useState(false);
         const data = load("nexon_messages", DEFAULT_MESSAGES);
         return Array.isArray(data) ? data : DEFAULT_MESSAGES;
       });
-      const [services, setServices] = useState(() => {
+const [services, setServices] = useState(() => {
         const data = load("nexon_services", DEFAULT_SERVICES);
         return Array.isArray(data) ? data : DEFAULT_SERVICES;
+      });
+      const [reviews, setReviews] = useState(() => {
+        const data = load("nexon_reviews", []);
+        return Array.isArray(data) ? data : [];
       });
       const [credentials, setCredentials] = useState(() => load("nexon_credentials", { username: "admin", hash: "aa28d6e3b8d8c0c7c25a276094af8ed1667d265bc20ef3239341fb2dff646933" }));
       
@@ -564,6 +568,7 @@ const [loading, setLoading] = useState(false);
       const persistClients = (c) => { setClients(c); saveWithFirebase("nexon_clients", c); };
       const persistMessages = (m) => { setMessages(m); saveWithFirebase("nexon_messages", m); };
       const persistServices = (s) => { setServices(s); saveWithFirebase("nexon_services", s); };
+      const persistReviews = (r) => { setReviews(r); saveWithFirebase("nexon_reviews", r); };
       const persistCredentials = (c) => { setCredentials(c); saveWithFirebase("nexon_credentials", c); };
       const logout = () => { 
         localStorage.removeItem("nexon_session"); 
@@ -598,6 +603,7 @@ const [loading, setLoading] = useState(false);
         { id: "services", label: "Services", icon: "services" },
         { id: "projects", label: "Projects", icon: "projects" },
         { id: "clients", label: "Clients", icon: "clients" },
+        { id: "reviews", label: "Reviews", icon: "star" },
         { id: "messages", label: "Messages", icon: "messages", badge: unreadCount },
         { id: "settings", label: "Settings", icon: "settings" },
       ];
@@ -660,6 +666,7 @@ const [loading, setLoading] = useState(false);
               {activeTab === "services" && <ServicesTab services={services} setServices={persistServices} showToast={showToast} />}
               {activeTab === "projects" && <ProjectsTab projects={projects} setProjects={persistProjects} showToast={showToast} />}
               {activeTab === "clients" && <ClientsTab clients={clients} setClients={persistClients} showToast={showToast} />}
+              {activeTab === "reviews" && <ReviewsTab reviews={reviews} setReviews={persistReviews} showToast={showToast} />}
               {activeTab === "messages" && <MessagesTab messages={messages} setMessages={persistMessages} showToast={showToast} />}
               {activeTab === "settings" && <SettingsTab site={site} setSite={persistSite} credentials={credentials} setCredentials={persistCredentials} showToast={showToast} />}
             </div>
@@ -1063,6 +1070,76 @@ const [loading, setLoading] = useState(false);
                 <button className="btn-ghost" onClick={() => setModal(null)}>Cancel</button>
               </div>
             </Modal>
+          )}
+        </div>
+      );
+    }
+
+    // Reviews Tab
+    function ReviewsTab({ reviews, setReviews, showToast }) {
+      const [modal, setModal] = useState(null);
+      const [form, setForm] = useState({ name: "", role: "", company: "", review: "", rating: 5, visible: true });
+      const [showForm, setShowForm] = useState(false);
+
+      const openAdd = () => { setForm({ name: "", role: "", company: "", review: "", rating: 5, visible: true }); setModal({ mode: "add" }); setShowForm(true); };
+      const openEdit = (r) => { setForm(r); setModal({ mode: "edit", id: r.id }); setShowForm(true); };
+
+      const saveReview = () => {
+        if (!form.name || !form.review) return;
+        if (modal.mode === "add") setReviews([...reviews, { ...form, id: Date.now() }]);
+        else setReviews(reviews.map(r => r.id === modal.id ? { ...form, id: modal.id } : r));
+        setModal(null); setShowForm(false); showToast(modal.mode === "add" ? "Review added!" : "Review updated!");
+      };
+
+      const deleteReview = (id) => { setReviews(reviews.filter(r => r.id !== id)); showToast("Review deleted."); };
+      const toggleVisible = (id) => { setReviews(reviews.map(r => r.id === id ? { ...r, visible: !r.visible } : r)); };
+
+      return (
+        <div>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 28 }}>
+            <div><h1 className="section-title">Customer Reviews</h1><p className="section-sub">Manage customer reviews and testimonials shown on website.</p></div>
+            <button className="btn-primary" onClick={openAdd}><Icon name="plus" size={14} /> Add Review</button>
+          </div>
+
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))", gap: 16 }}>
+            {reviews.map(r => (
+              <div key={r.id} style={{ background: "#0f172a", borderRadius: 12, padding: 20, border: "1px solid #1e3a5f" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 12 }}>
+                  <div style={{ color: "#e2e8f0", fontWeight: 700, fontSize: 16 }}>{r.name}</div>
+                  <span style={{ fontSize: 11, fontWeight: 700, borderRadius: 20, padding: "3px 9px", background: r.visible ? "rgba(52,211,153,0.15)" : "rgba(248,113,113,0.1)", color: r.visible ? "#34d399" : "#f87171", border: `1px solid ${r.visible ? "rgba(52,211,153,0.3)" : "rgba(248,113,113,0.2)"}` }}>{r.visible ? "VISIBLE" : "HIDDEN"}</span>
+                </div>
+                <div style={{ color: "#94a3b8", fontSize: 13, marginBottom: 8 }}>{r.role}{r.company ? ` at ${r.company}` : ''}</div>
+                <div style={{ color: "#e2e8f0", fontSize: 14, marginBottom: 12, fontStyle: "italic", lineHeight: 1.5 }}>"{r.review}"</div>
+                <div style={{ color: "#fbbf24", marginBottom: 16, fontSize: 18 }}>{"★".repeat(r.rating)}{"☆".repeat(5-r.rating)}</div>
+                <div style={{ display: "flex", gap: 8 }}>
+                  <button className="btn-ghost" onClick={() => toggleVisible(r.id)} style={{ flex: 1, fontSize: 12 }}>{r.visible ? "Hide" : "Show"}</button>
+                  <button className="btn-ghost" onClick={() => openEdit(r)} style={{ flex: 1, fontSize: 12 }}>Edit</button>
+                  <button className="btn-ghost" onClick={() => deleteReview(r.id)} style={{ color: "#f87171", flex: 1, fontSize: 12 }}>Delete</button>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {showForm && modal && (
+            <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.85)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000 }} onClick={() => setShowForm(false)}>
+              <div style={{ background: "#0f172a", borderRadius: 16, padding: 32, width: "90%", maxWidth: 520, maxHeight: "90vh", overflow: "auto" }} onClick={e => e.stopPropagation()}>
+                <h2 style={{ color: "#e2e8f0", fontSize: 20, fontWeight: 700, marginBottom: 24 }}>{modal.mode === "add" ? "Add New Review" : "Edit Review"}</h2>
+                <Field label="Customer Name" value={form.name} onChange={v => setForm(f => ({ ...f, name: v }))} placeholder="John Doe" />
+                <Field label="Job Title/Role" value={form.role} onChange={v => setForm(f => ({ ...f, role: v }))} placeholder="CEO, Manager, Engineer" />
+                <Field label="Company Name" value={form.company} onChange={v => setForm(f => ({ ...f, company: v }))} placeholder="Company Name (optional)" />
+                <Field label="Review Text" value={form.review} onChange={v => setForm(f => ({ ...f, review: v }))} rows={3} placeholder="Great service! Highly recommended..." />
+                <div style={{ marginBottom: 20 }}>
+                  <label style={{ display: "block", color: "#94a3b8", fontSize: 12, fontWeight: 600, marginBottom: 8 }}>Rating (1-5 Stars)</label>
+                  <select value={form.rating} onChange={e => setForm(f => ({ ...f, rating: parseInt(e.target.value) }))} style={{ width: "100%", background: "#0f172a", border: "1px solid #1e3a5f", borderRadius: 8, padding: "12px 14px", color: "#e2e8f0", fontSize: 14 }}>
+                    {[5,4,3,2,1].map(n => <option key={n} value={n}>{n} {"★".repeat(n)}{"☆".repeat(5-n)}</option>)}
+                  </select>
+                </div>
+                <div style={{ display: "flex", gap: 12 }}>
+                  <button className="btn-primary" onClick={saveReview} style={{ flex: 1 }}>Save Review</button>
+                  <button className="btn-ghost" onClick={() => setShowForm(false)}>Cancel</button>
+                </div>
+              </div>
+            </div>
           )}
         </div>
       );

@@ -509,47 +509,8 @@
     
     <div class="marquee py-12 bg-white/50 backdrop-blur-sm border-y border-navy/5">
       <div class="marquee-content gap-12 px-12">
-        <!-- Duplicate content for seamless loop -->
-        <div class="flex gap-12">
-          <div class="glass-card bg-white p-8 w-[400px] shadow-xl border-none">
-            <div class="flex text-amber-500 mb-4"><i data-feather="star"></i><i data-feather="star"></i><i data-feather="star"></i><i data-feather="star"></i><i data-feather="star"></i></div>
-            <p class="text-indigo/80 italic mb-6">"Nexon provided exceptional service for our factory wiring. Their team is professional and highly skilled."</p>
-            <div class="font-bold text-navy">Operations Manager</div>
-            <div class="text-royal text-sm uppercase tracking-widest">Industrial Complex</div>
-          </div>
-          <div class="glass-card bg-white p-8 w-[400px] shadow-xl border-none">
-            <div class="flex text-amber-500 mb-4"><i data-feather="star"></i><i data-feather="star"></i><i data-feather="star"></i><i data-feather="star"></i><i data-feather="star"></i></div>
-            <p class="text-indigo/80 italic mb-6">"Their automation solutions transformed our production efficiency. Highly recommended for complex projects."</p>
-            <div class="font-bold text-navy">Chief Engineer</div>
-            <div class="text-royal text-sm uppercase tracking-widest">Manufacturing Co.</div>
-          </div>
-          <div class="glass-card bg-white p-8 w-[400px] shadow-xl border-none">
-            <div class="flex text-amber-500 mb-4"><i data-feather="star"></i><i data-feather="star"></i><i data-feather="star"></i><i data-feather="star"></i><i data-feather="star"></i></div>
-            <p class="text-indigo/80 italic mb-6">"The solar installation was seamless. We've seen a significant reduction in our energy costs."</p>
-            <div class="font-bold text-navy">Facility Director</div>
-            <div class="text-royal text-sm uppercase tracking-widest">Commercial Center</div>
-          </div>
-        </div>
-        <!-- Duplicate for loop -->
-        <div class="flex gap-12">
-          <div class="glass-card bg-white p-8 w-[400px] shadow-xl border-none">
-            <div class="flex text-amber-500 mb-4"><i data-feather="star"></i><i data-feather="star"></i><i data-feather="star"></i><i data-feather="star"></i><i data-feather="star"></i></div>
-            <p class="text-indigo/80 italic mb-6">"Nexon provided exceptional service for our factory wiring. Their team is professional and highly skilled."</p>
-            <div class="font-bold text-navy">Operations Manager</div>
-            <div class="text-royal text-sm uppercase tracking-widest">Industrial Complex</div>
-          </div>
-          <div class="glass-card bg-white p-8 w-[400px] shadow-xl border-none">
-            <div class="flex text-amber-500 mb-4"><i data-feather="star"></i><i data-feather="star"></i><i data-feather="star"></i><i data-feather="star"></i><i data-feather="star"></i></div>
-            <p class="text-indigo/80 italic mb-6">"Their automation solutions transformed our production efficiency. Highly recommended for complex projects."</p>
-            <div class="font-bold text-navy">Chief Engineer</div>
-            <div class="text-royal text-sm uppercase tracking-widest">Manufacturing Co.</div>
-          </div>
-          <div class="glass-card bg-white p-8 w-[400px] shadow-xl border-none">
-            <div class="flex text-amber-500 mb-4"><i data-feather="star"></i><i data-feather="star"></i><i data-feather="star"></i><i data-feather="star"></i><i data-feather="star"></i></div>
-            <p class="text-indigo/80 italic mb-6">"The solar installation was seamless. We've seen a significant reduction in our energy costs."</p>
-            <div class="font-bold text-navy">Facility Director</div>
-            <div class="text-royal text-sm uppercase tracking-widest">Commercial Center</div>
-          </div>
+        <div class="flex gap-12" id="testimonials-container">
+          <!-- Reviews loaded dynamically from Firebase -->
         </div>
       </div>
     </div>
@@ -734,9 +695,40 @@
     function applyServicesUpdates() { /* Services handled in services.html */ }
     function applyProjectsUpdates() { /* Projects handled in projects.html */ }
     function applyClientsUpdates() { /* Clients handled in clients.html */ }
+
+    function applyReviewsUpdates() {
+      syncWithFirebase('nexon_reviews', (reviewsData) => {
+        const container = document.getElementById('testimonials-container');
+        if (!container || !reviewsData) return;
+        
+        const reviews = Array.isArray(reviewsData) ? reviewsData : Object.values(reviewsData);
+        const visibleReviews = reviews.filter(r => r.visible !== false);
+        
+        if (visibleReviews.length === 0) {
+          container.innerHTML = '';
+          return;
+        }
+        
+        let html = '';
+        visibleReviews.forEach(r => {
+          const stars = '★'.repeat(r.rating || 5) + '☆'.repeat(5 - (r.rating || 5));
+          html += `
+            <div class="glass-card bg-white p-8 w-[400px] shadow-xl border-none">
+              <div class="flex text-amber-500 mb-4">${stars}</div>
+              <p class="text-indigo/80 italic mb-6">"${r.review || ''}"</p>
+              <div class="font-bold text-navy">${r.name || ''}</div>
+              <div class="text-royal text-sm uppercase tracking-widest">${r.role || ''}${r.company ? ' at ' + r.company : ''}</div>
+            </div>
+          `;
+        });
+        
+        container.innerHTML = html + html;
+      });
+    }
     
     // Run on load
     setTimeout(applySiteUpdates, 500);
+    setTimeout(applyReviewsUpdates, 800);
   </script>
 </body>
 </html>
