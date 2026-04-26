@@ -459,6 +459,14 @@
     </div>
   </section>
 
+  <!-- Review Float Button -->
+  <div class="review-float">
+    <a href="contact.html#review-form" class="review-text">Leave a Review</a>
+    <a href="contact.html#review-form" class="review-btn">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.2h7.6l-6 4.8 2.4 7.2-6-4.8-6 4.8 2.4-7.2-6-4.8h7.6z"/></svg>
+    </a>
+  </div>
+
 
   <!-- FOOTER -->
   <footer class="bg-navy text-pearl py-16">
@@ -618,8 +626,29 @@
       if (window.feather) feather.replace();
     }
     
+    // Firebase real-time sync for services
+    function syncServicesFromFirebase(data) {
+      if (data) {
+        try {
+          localStorage.setItem('nexon_services', JSON.stringify(data));
+          if (!servicesData) {
+            servicesData = data;
+            renderServices();
+          }
+        } catch(e) {}
+      }
+    }
+    
     // Run on load
-    setTimeout(renderServices, 500);
+    setTimeout(() => {
+      renderServices();
+      // Sync with Firebase
+      try {
+        if (typeof syncWithFirebase === 'function') {
+          syncWithFirebase('services', syncServicesFromFirebase);
+        }
+      } catch(e) {}
+    }, 500);
   </script>
 
 </body>

@@ -193,13 +193,13 @@
 
 <!-- Dynamic Projects Container -->
   <section class="py-16" style="background: linear-gradient(180deg, #020917 0%, #0d1b38 100%);">
-    <div class="container mx-auto px-6" id="projects-container">
-      <!-- Projects will be loaded dynamically from localStorage/Firebase -->
-    </div>
-  </section>
-
-<!-- CTA Section -->
-      <div class="bg-gradient-to-r from-royal to-indigo rounded-3xl p-10 md:p-16 text-center relative overflow-hidden">
+    <div class="container mx-auto px-6">
+      <div id="projects-container">
+        <!-- Projects loaded dynamically -->
+      </div>
+      
+      <!-- CTA Section -->
+      <div class="bg-gradient-to-r from-royal to-indigo rounded-3xl p-10 md:p-16 text-center relative overflow-hidden mt-16">
         <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(circle at 2px 2px, white 1px, transparent 0); background-size: 30px 30px;"></div>
         <div class="relative z-10">
           <h3 class="text-3xl font-bold text-pearl mb-4">Have a Project in Mind?</h3>
@@ -209,7 +209,6 @@
           </a>
         </div>
       </div>
-
     </div>
   </section>
 
@@ -287,7 +286,15 @@
       </div>
 
     </div>
-  </section>
+</section>
+
+  <!-- Review Float Button -->
+  <div class="review-float">
+    <a href="contact.html#review-form" class="review-text">Leave a Review</a>
+    <a href="contact.html#review-form" class="review-btn">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.2h7.6l-6 4.8 2.4 7.2-6-4.8-6 4.8 2.4-7.2-6-4.8h7.6z"/></svg>
+    </a>
+  </div>
 
   <!-- FOOTER -->
   <footer class="bg-navy text-pearl py-16">
@@ -459,12 +466,10 @@
       if (data) {
         try {
           localStorage.setItem('nexon_projects', JSON.stringify(data));
-          if (!projectsData) {
-            projectsData = data;
-            extractCategories();
-            renderProjects();
-            renderCategoryFilters();
-          }
+          projectsData = data;
+          extractCategories();
+          renderProjects();
+          renderCategoryFilters();
         } catch(e) {}
       }
     }

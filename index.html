@@ -105,46 +105,48 @@
 <body class="bg-pearl font-sans antialiased">
 
   <!-- NAVBAR -->
-  <nav id="navbar" class="fixed top-4 left-1/2 -translate-x-1/2 w-[95%] max-w-5xl z-50 glass-navbar transition-all duration-300">
-    <div class="flex items-center justify-between">
+  <nav id="navbar" class="glass-navbar">
+    <!-- Logo Section - No Glass -->
+    <div class="logo-section">
       <a href="index.html" class="flex items-center group">
-        <div class="logo">
-          <img src="https://raw.githubusercontent.com/NexonEngineering/nexonengineering.github.io/refs/heads/main/Gemini_Generated_Image_68tq6v68tq6v68tqdfdsgfsg-Photoroom.png" alt="Nexon" class="h-10 transition-transform duration-300 group-hover:scale-110" />
-          <span class="company-name text-xs lg:text-sm text-pearl font-semibold ml-2 hidden sm:inline">
-            NEXON ENGINEERING
-          </span>
-        </div>
+        <img src="https://raw.githubusercontent.com/NexonEngineering/nexonengineering.github.io/refs/heads/main/Gemini_Generated_Image_68tq6v68tq6v68tqdfdsgfsg-Photoroom.png" alt="Nexon" class="h-12 transition-transform duration-300 group-hover:scale-110" />
+        <span class="company-name text-pearl font-semibold ml-2 hidden lg:inline">
+          NEXON ENGINEERING
+        </span>
       </a>
+    </div>
 
-      <div id="dynamic-nav" class="hidden md:flex space-x-6 text-pearl font-medium nav-links">
+    <!-- Glass Links Container -->
+    <div class="nav-links-container">
+      <div id="dynamic-nav" class="nav-links flex items-center gap-4">
         <a href="index.html" class="text-royal">Home</a>
-        <a href="about.html" class="hover:text-[#8FC1FA]">About</a>
-        <a href="services.html" class="hover:text-[#8FC1FA]">Services</a>
-        <a href="projects.html" class="hover:text-[#8FC1FA]">Projects</a>
-        <a href="our-clients.html" class="hover:text-[#8FC1FA]">Our Clients</a>
-        <a href="contact.html" class="hover:text-[#8FC1FA]">Contact</a>
+        <a href="about.html">About</a>
+        <a href="services.html">Services</a>
+        <a href="projects.html">Projects</a>
+        <a href="our-clients.html">Our Clients</a>
+        <a href="contact.html">Contact</a>
       </div>
-
-      <a href="contact.html" class="hidden md:inline-flex items-center gap-2 px-4 py-2 bg-royal/80 hover:bg-royal text-pearl rounded-full text-sm font-medium transition-all duration-300 hover:shadow-lg hover:shadow-royal/30">
-        <i data-feather="phone" class="w-4 h-4"></i>
-        Get Quote
-      </a>
-
-      <button id="mobile-btn" class="md:hidden text-pearl p-2">
-        <i data-feather="menu"></i>
-      </button>
     </div>
 
-    <div id="mobile-menu" class="hidden bg-navy/95 backdrop-blur-lg text-pearl px-6 py-6 space-y-4 md:hidden border-t border-white/10 absolute top-full left-0 w-full mt-2 rounded-b-2xl">
-      <div id="dynamic-mobile-nav" class="space-y-2">
-        <!-- Mobile navigation links will be loaded dynamically -->
-      </div>
-      <a href="contact.html" class="inline-flex items-center gap-2 mt-4 px-5 py-2.5 bg-royal text-pearl rounded-full text-sm font-medium">
-        <i data-feather="phone" class="w-4 h-4"></i>
-        Get Quote
-      </a>
-    </div>
+    <!-- Quote Button -->
+    <a href="contact.html" class="quote-btn">
+      Get Quote
+    </a>
+
+    <button id="mobile-btn" class="md:hidden text-pearl p-2">
+      <i data-feather="menu"></i>
+    </button>
   </nav>
+
+  <!-- Mobile Menu -->
+  <div id="mobile-menu" class="hidden bg-navy/95 backdrop-blur-lg text-pearl px-6 py-6 space-y-4 md:hidden border-t border-white/10 absolute top-full left-0 w-full mt-2 rounded-b-2xl">
+    <div id="dynamic-mobile-nav" class="space-y-2">
+      <!-- Mobile navigation links will be loaded dynamically -->
+    </div>
+    <a href="contact.html" class="inline-flex items-center gap-2 mt-4 px-5 py-2.5 bg-royal text-pearl rounded-full text-sm font-medium">
+      Get Quote
+    </a>
+  </div>
 
 
   <!-- HERO -->
@@ -654,6 +656,14 @@
     </a>
   </div>
 
+  <!-- Review Float Button -->
+  <div class="review-float">
+    <a href="contact.html#review-form" class="review-text">Leave a Review</a>
+    <a href="contact.html#review-form" class="review-btn">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.2h7.6l-6 4.8 2.4 7.2-6-4.8-6 4.8 2.4-7.2-6-4.8h7.6z"/></svg>
+    </a>
+  </div>
+
   <!-- Live Chat Widget -->
   <button class="chat-toggle-btn" onclick="toggleChat()" id="chatToggleBtn">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v-.5z"/></svg>
@@ -664,7 +674,7 @@
       <div class="chat-header">
         <img src="https://raw.githubusercontent.com/NexonEngineering/nexonengineering.github.io/refs/heads/main/Gemini_Generated_Image_hmrljuhmrljuhmrl-Photoroom.png" alt="Nexon" style="width: 40px; height: 40px; border-radius: 50%;">
         <div>
-          <div style="font-weight: 600; font-size: 14px;">NEXON Engineering</div>
+          <div style="font-weight: 600; font-size: 14px;">NEXON Assistant</div>
           <div style="font-size: 11px; opacity: 0.8;">Typically replies within minutes</div>
         </div>
         <button class="chat-close" onclick="toggleChat()">
@@ -729,37 +739,50 @@
     })();
   </script>
    
-  <!-- Apply Firebase Updates -->
+<!-- Apply Firebase Updates -->
   <script>
     function applySiteUpdates() {
-      if (!siteData) return;
-      
-      // Update logo
-      if (siteData.logo) {
-        const logos = document.querySelectorAll('#main-logo, .site-logo');
-        logos.forEach(img => {
-          if (img.tagName === 'IMG') img.src = siteData.logo;
-        });
-      }
-      
-      // Update company name
-      if (siteData.companyName) {
-        document.title = siteData.companyName + ' — Home';
-      }
-      
-      // Update stats
-      if (siteData.stats) {
-        const statElements = document.querySelectorAll('[data-stat]');
-        statElements.forEach(el => {
-          const key = el.getAttribute('data-stat');
-          if (siteData.stats[key]) el.textContent = siteData.stats[key];
-        });
-      }
-      
-      // Page visibility
-      if (siteData.pages && siteData.pages.home === false) {
-        document.body.innerHTML = '<div style="display:flex;justify-content:center;align-items:center;min-height:100vh;background:#0a2463;color:#fff;font-family:sans-serif;"><p>Page under maintenance</p></div>';
-      }
+      syncWithFirebase('site', (siteData) => {
+        if (!siteData) return;
+        
+        // Update logo
+        if (siteData.logo) {
+          const logos = document.querySelectorAll('#main-logo, .site-logo');
+          logos.forEach(img => {
+            if (img.tagName === 'IMG') img.src = siteData.logo;
+          });
+        }
+        
+        // Update company name
+        if (siteData.companyName) {
+          document.title = siteData.companyName + ' — Home';
+          const nameEls = document.querySelectorAll('.company-name');
+          nameEls.forEach(el => { el.textContent = siteData.companyName; });
+        }
+        
+        // Update stats
+        if (siteData.stats) {
+          const statElements = document.querySelectorAll('[data-stat]');
+          statElements.forEach(el => {
+            const key = el.getAttribute('data-stat');
+            if (siteData.stats[key]) el.textContent = siteData.stats[key];
+          });
+        }
+        
+        // Update stats bar counters
+        if (siteData.stats) {
+          const counters = document.querySelectorAll('.counter');
+          counters.forEach(el => {
+            const target = el.getAttribute('data-target');
+            if (siteData.stats[target]) el.setAttribute('data-target', siteData.stats[target]);
+          });
+        }
+        
+        // Page visibility
+        if (siteData.pages && siteData.pages.home === false) {
+          document.body.innerHTML = '<div style="display:flex;justify-content:center;align-items:center;min-height:100vh;background:#0a2463;color:#fff;font-family:sans-serif;"><p>Page under maintenance</p></div>';
+        }
+      });
     }
     
     function applyServicesUpdates() { /* Services handled in services.html */ }
@@ -767,7 +790,7 @@
     function applyClientsUpdates() { /* Clients handled in clients.html */ }
 
     function applyReviewsUpdates() {
-      syncWithFirebase('reviews', (reviewsData) => {
+      syncWithFirebase('nexon_reviews', (reviewsData) => {
         const container = document.getElementById('testimonials-container');
         if (!container || !reviewsData) return;
         

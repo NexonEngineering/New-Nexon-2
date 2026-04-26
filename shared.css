@@ -11,26 +11,50 @@ html {
   100% { transform: translateY(40px) translateX(40px); }
 }
 
-/* Glass Navbar - Frosted Glass Effect */
+/* Glass Navbar - Modern with glass links only */
 .glass-navbar {
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  background: rgba(10, 36, 99, 0.85);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(10, 36, 99, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 30px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
   position: fixed;
-  top: 20px;
+  top: 16px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 1000;
-  padding: 12px 30px;
+  padding: 8px 8px;
   max-width: 95%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+/* Logo section - no glass */
+.glass-navbar .logo-section {
+  flex-shrink: 0;
+}
+
+/* Glass links container - only this section gets glass effect */
+.glass-navbar .nav-links-container {
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 25px;
+  padding: 6px 16px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
 }
 
 .glass-navbar .nav-links a {
   color: var(--pearl);
   transition: color 0.3s ease, text-shadow 0.3s ease;
+  font-size: 14px;
+  font-weight: 500;
 }
 
 .glass-navbar .nav-links a:hover,
@@ -41,13 +65,100 @@ html {
 
 .glass-navbar .company-name {
   font-weight: 600;
+  font-size: 14px;
+}
+
+/* Get Quote button */
+.glass-navbar .quote-btn {
+  background: linear-gradient(135deg, #1E88E5, #00b4d8);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+
+.glass-navbar .quote-btn:hover {
+  box-shadow: 0 0 15px rgba(30, 136, 229, 0.5);
+  transform: translateY(-1px);
+}
+
+/* Review Float Button */
+.review-float {
+  position: fixed;
+  right: 20px;
+  bottom: 100px;
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.review-float .review-text {
+  background: rgba(251, 191, 36, 0.9);
+  color: #0A2463;
+  padding: 8px 14px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+  opacity: 0;
+  transform: translateX(20px);
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.review-float:hover .review-text {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.review-float .review-btn {
+  width: 56px;
+  height: 56px;
+  background: linear-gradient(135deg, #f59e0b, #fbbf24);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 20px rgba(251, 191, 36, 0.5);
+  cursor: pointer;
+  transition: transform 0.3s ease;
+  border: none;
+}
+
+.review-float .review-btn:hover {
+  transform: scale(1.1);
+}
+
+.review-float .review-btn svg {
+  width: 26px;
+  height: 26px;
+  color: #0A2463;
+}
+
+@keyframes review-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.6); }
+  70% { box-shadow: 0 0 0 12px rgba(251, 191, 36, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(251, 191, 36, 0); }
+}
+
+.review-float .review-btn {
+  animation: review-pulse 2s infinite;
 }
 
 @media (max-width: 768px) {
   .glass-navbar {
     border-radius: 20px;
-    padding: 10px 20px;
+    padding: 8px 12px;
     top: 10px;
+  }
+  
+  .glass-navbar .nav-links-container {
+    display: none;
+  }
+}
   }
 }
 

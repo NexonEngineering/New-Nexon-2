@@ -1,0 +1,50 @@
+{
+  "rules": {
+    ".read": true,
+    ".write": "auth != null",
+    "site": {
+      ".write": "auth != null",
+      ".read": "auth != null"
+    },
+    "projects": {
+      ".write": "auth != null",
+      ".read": "auth != null"
+    },
+    "clients": {
+      ".write": "auth != null",
+      ".read": "auth != null"
+    },
+    "services": {
+      ".write": "auth != null",
+      ".read": "auth != null"
+    },
+    "messages": {
+      ".write": "auth != null",
+      ".read": "auth != null"
+    },
+    "nexon_reviews": {
+      ".write": "auth != null",
+      ".read": "auth != null"
+    },
+    "nexon_messages": {
+      ".write": "auth != null",
+      ".read": "auth != null"
+    },
+    "nexon_site": {
+      ".write": "auth != null",
+      ".read": "auth != null"
+    },
+    "nexon_projects": {
+      ".write": "auth != null",
+      ".read": "auth != null"
+    },
+    "nexon_clients": {
+      ".write": "auth != null",
+      ".read": "auth != null"
+    },
+    "nexon_services": {
+      ".write": "auth != null",
+      ".read": "auth != null"
+    }
+  }
+}

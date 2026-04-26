@@ -321,7 +321,7 @@
           </form>
 
           <!-- LEAVE A REVIEW SECTION -->
-          <div class="mt-8 bg-white shadow-2xl rounded-2xl p-8 hover:shadow-xl transition-all duration-500">
+          <div id="review-form" class="mt-8 bg-white shadow-2xl rounded-2xl p-8 hover:shadow-xl transition-all duration-500">
             <h3 class="text-2xl font-bold text-navy mb-2 flex items-center gap-3">
               <span class="w-10 h-10 bg-gradient-to-br from-amber-500 to-orange-500 rounded-xl flex items-center justify-center">
                 <i data-feather="star" class="w-5 h-5 text-pearl"></i>
@@ -368,6 +368,14 @@
       </div>
     </div>
   </section>
+
+  <!-- Review Float Button -->
+  <div class="review-float">
+    <a href="#review-form" class="review-text">Leave a Review</a>
+    <a href="#review-form" class="review-btn">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.2h7.6l-6 4.8 2.4 7.2-6-4.8-6 4.8 2.4-7.2-6-4.8h7.6z"/></svg>
+    </a>
+  </div>
 
   <!-- FOOTER -->
   <footer class="bg-navy text-pearl py-16">
@@ -515,20 +523,31 @@
       submitBtn.textContent = 'Sending...';
       
       try {
-        const response = await fetch('/api/contacts', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name, email, message })
-        });
+        const newMessage = {
+          id: Date.now(),
+          name: name,
+          email: email,
+          message: message,
+          date: new Date().toISOString().split("T")[0],
+          read: false,
+          type: 'contact'
+        };
         
-        if (response.ok) {
-          document.getElementById('success-popup').classList.remove('hidden');
-          form.reset();
-        } else {
-          alert('Failed to send message. Please try again.');
+        // Save to localStorage
+        const storedMsgs = localStorage.getItem('nexon_messages');
+        let messages = storedMsgs ? JSON.parse(storedMsgs) : [];
+        messages.unshift(newMessage);
+        localStorage.setItem('nexon_messages', JSON.stringify(messages));
+        
+        // Save to Firebase
+        if (typeof writeToFirebase === 'function') {
+          writeToFirebase('messages', messages);
         }
+        
+        document.getElementById('success-popup').classList.remove('hidden');
+        form.reset();
       } catch (err) {
-        alert('Connection error. Please try again.');
+        alert('Failed to send message. Please try again.');
       } finally {
         submitBtn.disabled = false;
         submitBtn.textContent = 'Send Message';
@@ -630,7 +649,7 @@
     }
     
     // Run on load
-    syncWithFirebase('nexon_site', applyContactUpdates);
+    syncWithFirebase('site', applyContactUpdates);
     
     setTimeout(() => {
       try {
