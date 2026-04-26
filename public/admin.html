@@ -809,14 +809,45 @@ const [loading, setLoading] = useState(false);
 
               {/* PROJECTS PAGE */}
               {activePage === "projects" && <>
-                <Field label="Page Title" value={pageData.title} onChange={v => update("title", v)} placeholder="Our Projects" />
-                <Field label="Page Subtitle" value={pageData.subtitle} onChange={v => update("subtitle", v)} rows={2} placeholder="Real-world engineering solutions..." />
+                <h4 style={{ color: "#00b4d8", fontSize: 14, fontWeight: 700, marginBottom: 16, marginTop: 0 }}>Header Section</h4>
+                <Field label="Page Label" value={pageData.label} onChange={v => update("label", v)} placeholder="Portfolio" />
+                <Field label="Main Title" value={pageData.title} onChange={v => update("title", v)} placeholder="Our Projects" />
+                <Field label="Subtitle" value={pageData.subtitle} onChange={v => update("subtitle", v)} rows={2} placeholder="Real-world engineering solutions..." />
+                
+                <h4 style={{ color: "#00b4d8", fontSize: 14, fontWeight: 700, marginBottom: 16, marginTop: 24 }}>Statistics</h4>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                  <Field label="Projects Done" value={pageData.statsProjects} onChange={v => update("statsProjects", v)} placeholder="50+" />
+                  <Field label="Showcase Cases" value={pageData.statsCases} onChange={v => update("statsCases", v)} placeholder="9" />
+                  <Field label="Categories" value={pageData.statsCategories} onChange={v => update("statsCategories", v)} placeholder="4+" />
+                </div>
+                
+                <h4 style={{ color: "#00b4d8", fontSize: 14, fontWeight: 700, marginBottom: 16, marginTop: 24 }}>Category Filters</h4>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                  <Field label="All Projects Text" value={pageData.filterAll} onChange={v => update("filterAll", v)} placeholder="All Projects" />
+                  <Field label="Automation Text" value={pageData.filterAutomation} onChange={v => update("filterAutomation", v)} placeholder="Automation" />
+                  <Field label="Electrical Text" value={pageData.filterElectrical} onChange={v => update("filterElectrical", v)} placeholder="Electrical" />
+                  <Field label="Solar Text" value={pageData.filterSolar} onChange={v => update("filterSolar", v)} placeholder="Solar" />
+                  <Field label="Security Text" value={pageData.filterSecurity} onChange={v => update("filterSecurity", v)} placeholder="Security" />
+                </div>
               </>}
 
               {/* CLIENTS PAGE */}
               {activePage === "clients" && <>
-                <Field label="Page Title" value={pageData.title} onChange={v => update("title", v)} placeholder="Our Clients" />
-                <Field label="Page Subtitle" value={pageData.subtitle} onChange={v => update("subtitle", v)} rows={2} placeholder="Trusted by leading industries..." />
+                <h4 style={{ color: "#00b4d8", fontSize: 14, fontWeight: 700, marginBottom: 16, marginTop: 0 }}>Header Section</h4>
+                <Field label="Page Label" value={pageData.label} onChange={v => update("label", v)} placeholder="Partners" />
+                <Field label="Main Title" value={pageData.title} onChange={v => update("title", v)} placeholder="Our Clients" />
+                <Field label="Subtitle" value={pageData.subtitle} onChange={v => update("subtitle", v)} rows={2} placeholder="Trusted by leading industries..." />
+                
+                <h4 style={{ color: "#00b4d8", fontSize: 14, fontWeight: 700, marginBottom: 16, marginTop: 24 }}>Statistics</h4>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                  <Field label="Corporate Partners" value={pageData.statsPartners} onChange={v => update("statsPartners", v)} placeholder="30+" />
+                  <Field label="Years Serving" value={pageData.statsYears} onChange={v => update("statsYears", v)} placeholder="8+" />
+                  <Field label="Satisfaction Rate" value={pageData.statsSatisfaction} onChange={v => update("statsSatisfaction", v)} placeholder="100%" />
+                </div>
+                
+                <h4 style={{ color: "#00b4d8", fontSize: 14, fontWeight: 700, marginBottom: 16, marginTop: 24 }}>About Section</h4>
+                <Field label="Section Title" value={pageData.sectionTitle} onChange={v => update("sectionTitle", v)} placeholder="Our Corporate Partners" />
+                <Field label="Section Text" value={pageData.sectionText} onChange={v => update("sectionText", v)} rows={4} placeholder="We proudly work with..." />
               </>}
 
               {/* CONTACT PAGE */}

@@ -62,38 +62,50 @@ function loadNavigation() {
 }
 
 function loadSettings() {
-    syncWithFirebase('site', (site) => {
-        if (!site) return;
+    syncWithFirebase('site', (siteData) => {
+        if (!siteData) return;
         
-        const settings = {
-            companyName: site.companyName,
-            tagline: site.tagline || 'Industrial Excellence, Trusted Solutions',
-            email: site.contact?.email,
-            phone: site.contact?.phone,
-            whatsapp: site.contact?.whatsapp,
-            address: site.contact?.address,
-            facebook: site.contact?.facebook,
-            instagram: site.contact?.instagram,
-            linkedin: site.contact?.linkedin
+        // Global settings from site object
+        const globals = {
+            companyName: siteData.companyName,
+            tagline: siteData.tagline,
+            email: siteData.email,
+            phone: siteData.phone,
+            whatsapp: siteData.whatsapp,
+            address: siteData.address,
+            facebook: siteData.facebook,
+            instagram: siteData.instagram,
+            linkedin: siteData.linkedin
         };
         
+        // Update global elements
         document.querySelectorAll('[data-setting]').forEach(el => {
             const key = el.getAttribute('data-setting');
-            if (settings[key]) {
-                el.textContent = settings[key];
+            // Check globals first
+            if (globals[key] !== undefined) {
+                el.textContent = globals[key];
+            }
+            // Check pages data
+            else if (siteData.pages) {
+                Object.keys(siteData.pages).forEach(page => {
+                    const pageData = siteData.pages[page];
+                    if (pageData && pageData[key] !== undefined) {
+                        el.textContent = pageData[key];
+                    }
+                });
             }
         });
         
         document.querySelectorAll('[data-setting-href]').forEach(el => {
             const key = el.getAttribute('data-setting-href');
-            if (settings[key]) {
-                el.href = settings[key];
+            if (globals[key]) {
+                el.href = globals[key];
             }
         });
         
         // Update Title
-        if (site.companyName) {
-            document.title = site.companyName + (window.location.pathname.includes('index') ? ' — Home' : '');
+        if (siteData.companyName) {
+            document.title = siteData.companyName + (window.location.pathname.includes('index') ? ' — Home' : '');
         }
     });
 }
