@@ -1080,8 +1080,14 @@ const [services, setServices] = useState(() => {
       const [modal, setModal] = useState(null);
       const [form, setForm] = useState({ name: "", role: "", company: "", review: "", rating: 5, visible: true });
       const [showForm, setShowForm] = useState(false);
+      const [showPendingOnly, setShowPendingOnly] = useState(false);
 
-      const openAdd = () => { setForm({ name: "", role: "", company: "", review: "", rating: 5, visible: true }); setModal({ mode: "add" }); setShowForm(true); };
+      const pendingReviews = reviews.filter(r => r.status === 'pending');
+      const approvedReviews = reviews.filter(r => r.status !== 'pending');
+      const totalRating = reviews.reduce((acc, r) => acc + (r.rating || 5), 0);
+      const avgRating = reviews.length ? (totalRating / reviews.length).toFixed(1) : '0';
+
+      const openAdd = () => { setForm({ name: "", role: "", company: "", review: "", rating: 5, visible: true, status: 'approved' }); setModal({ mode: "add" }); setShowForm(true); };
       const openEdit = (r) => { setForm(r); setModal({ mode: "edit", id: r.id }); setShowForm(true); };
 
       const saveReview = () => {
@@ -1093,6 +1099,8 @@ const [services, setServices] = useState(() => {
 
       const deleteReview = (id) => { setReviews(reviews.filter(r => r.id !== id)); showToast("Review deleted."); };
       const toggleVisible = (id) => { setReviews(reviews.map(r => r.id === id ? { ...r, visible: !r.visible } : r)); };
+      const approveReview = (id) => { setReviews(reviews.map(r => r.id === id ? { ...r, status: 'approved', visible: true } : r)); showToast("Review approved!"); };
+      const rejectReview = (id) => { setReviews(reviews.map(r => r.id === id ? { ...r, status: 'rejected' } : r)); showToast("Review rejected."); };
 
       return (
         <div>
@@ -1101,23 +1109,78 @@ const [services, setServices] = useState(() => {
             <button className="btn-primary" onClick={openAdd}><Icon name="plus" size={14} /> Add Review</button>
           </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))", gap: 16 }}>
-            {reviews.map(r => (
-              <div key={r.id} style={{ background: "#0f172a", borderRadius: 12, padding: 20, border: "1px solid #1e3a5f" }}>
-                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 12 }}>
-                  <div style={{ color: "#e2e8f0", fontWeight: 700, fontSize: 16 }}>{r.name}</div>
-                  <span style={{ fontSize: 11, fontWeight: 700, borderRadius: 20, padding: "3px 9px", background: r.visible ? "rgba(52,211,153,0.15)" : "rgba(248,113,113,0.1)", color: r.visible ? "#34d399" : "#f87171", border: `1px solid ${r.visible ? "rgba(52,211,153,0.3)" : "rgba(248,113,113,0.2)"}` }}>{r.visible ? "VISIBLE" : "HIDDEN"}</span>
-                </div>
-                <div style={{ color: "#94a3b8", fontSize: 13, marginBottom: 8 }}>{r.role}{r.company ? ` at ${r.company}` : ''}</div>
-                <div style={{ color: "#e2e8f0", fontSize: 14, marginBottom: 12, fontStyle: "italic", lineHeight: 1.5 }}>"{r.review}"</div>
-                <div style={{ color: "#fbbf24", marginBottom: 16, fontSize: 18 }}>{"★".repeat(r.rating)}{"☆".repeat(5-r.rating)}</div>
-                <div style={{ display: "flex", gap: 8 }}>
-                  <button className="btn-ghost" onClick={() => toggleVisible(r.id)} style={{ flex: 1, fontSize: 12 }}>{r.visible ? "Hide" : "Show"}</button>
-                  <button className="btn-ghost" onClick={() => openEdit(r)} style={{ flex: 1, fontSize: 12 }}>Edit</button>
-                  <button className="btn-ghost" onClick={() => deleteReview(r.id)} style={{ color: "#f87171", flex: 1, fontSize: 12 }}>Delete</button>
-                </div>
+          {/* Analytics Cards */}
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16, marginBottom: 28 }}>
+            <div style={{ background: "#0f172a", borderRadius: 12, padding: 20, border: "1px solid #1e3a5f", textAlign: "center" }}>
+              <div style={{ color: "#fbbf24", fontSize: 32, fontWeight: 800 }}>{avgRating}</div>
+              <div style={{ color: "#64748b", fontSize: 11, fontWeight: 700, textTransform: "uppercase" }}>Avg Rating</div>
+            </div>
+            <div style={{ background: "#0f172a", borderRadius: 12, padding: 20, border: "1px solid #1e3a5f", textAlign: "center" }}>
+              <div style={{ color: "#00b4d8", fontSize: 32, fontWeight: 800 }}>{reviews.length}</div>
+              <div style={{ color: "#64748b", fontSize: 11, fontWeight: 700, textTransform: "uppercase" }}>Total Reviews</div>
+            </div>
+            <div style={{ background: "#0f172a", borderRadius: 12, padding: 20, border: "1px solid #1e3a5f", textAlign: "center" }}>
+              <div style={{ color: "#34d399", fontSize: 32, fontWeight: 800 }}>{approvedReviews.length}</div>
+              <div style={{ color: "#64748b", fontSize: 11, fontWeight: 700, textTransform: "uppercase" }}>Approved</div>
+            </div>
+            <div style={{ background: pendingReviews.length ? "rgba(251,191,36,0.15)" : "#0f172a", borderRadius: 12, padding: 20, border: pendingReviews.length ? "1px solid rgba(251,191,36,0.3)" : "1px solid #1e3a5f", textAlign: "center", cursor: "pointer" }} onClick={() => setShowPendingOnly(!showPendingOnly)}>
+              <div style={{ color: pendingReviews.length ? "#fbbf24" : "#64748b", fontSize: 32, fontWeight: 800 }}>{pendingReviews.length}</div>
+              <div style={{ color: pendingReviews.length ? "#fbbf24" : "#64748b", fontSize: 11, fontWeight: 700, textTransform: "uppercase" }}>Pending</div>
+            </div>
+          </div>
+
+          {/* Pending Reviews Section */}
+          {pendingReviews.length > 0 && (
+            <div style={{ marginBottom: 28 }}>
+              <h2 style={{ color: "#e2e8f0", fontSize: 16, fontWeight: 700, marginBottom: 16, display: "flex", alignItems: "center", gap: 8 }}>
+                <span style={{ color: "#fbbf24" }}>⏳</span> Pending Reviews ({pendingReviews.length})
+              </h2>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))", gap: 16 }}>
+                {pendingReviews.map(r => (
+                  <div key={r.id} style={{ background: "rgba(251,191,36,0.08)", borderRadius: 12, padding: 20, border: "1px solid rgba(251,191,36,0.3)" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 12 }}>
+                      <div>
+                        <div style={{ color: "#e2e8f0", fontWeight: 700, fontSize: 16 }}>{r.name}</div>
+                        <div style={{ color: "#94a3b8", fontSize: 12 }}>{r.role}{r.company ? ` at ${r.company}` : ''}</div>
+                      </div>
+                      <span style={{ fontSize: 11, fontWeight: 700, borderRadius: 20, padding: "3px 9px", background: "rgba(251,191,36,0.2)", color: "#fbbf24" }}>PENDING</span>
+                    </div>
+                    <div style={{ color: "#e2e8f0", fontSize: 14, marginBottom: 12, fontStyle: "italic", lineHeight: 1.5 }}>"{r.review}"</div>
+                    <div style={{ color: "#fbbf24", marginBottom: 16, fontSize: 18 }}>{"★".repeat(r.rating)}{"☆".repeat(5-r.rating)}</div>
+                    <div style={{ display: "flex", gap: 8 }}>
+                      <button className="btn-primary" onClick={() => approveReview(r.id)} style={{ flex: 1, fontSize: 12, background: "linear-gradient(135deg,#10b981,#34d399)" }}>Approve</button>
+                      <button className="btn-ghost" onClick={() => rejectReview(r.id)} style={{ flex: 1, fontSize: 12, color: "#f87171" }}>Reject</button>
+                      <button className="btn-ghost" onClick={() => { setForm(r); setModal({ mode: "edit", id: r.id, pending: true }); setShowForm(true); }} style={{ flex: 1, fontSize: 12 }}>Edit</button>
+                    </div>
+                  </div>
+                ))}
               </div>
-            ))}
+            </div>
+          )}
+
+          {/* All Reviews */}
+          <div>
+            <h2 style={{ color: "#e2e8f0", fontSize: 16, fontWeight: 700, marginBottom: 16 }}>
+              {showPendingOnly ? "Pending Reviews" : "All Reviews"} ({showPendingOnly ? pendingReviews.length : reviews.length})
+            </h2>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))", gap: 16 }}>
+              {(showPendingOnly ? pendingReviews : approvedReviews).map(r => (
+                <div key={r.id} style={{ background: "#0f172a", borderRadius: 12, padding: 20, border: "1px solid #1e3a5f" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 12 }}>
+                    <div style={{ color: "#e2e8f0", fontWeight: 700, fontSize: 16 }}>{r.name}</div>
+                    <span style={{ fontSize: 11, fontWeight: 700, borderRadius: 20, padding: "3px 9px", background: r.visible ? "rgba(52,211,153,0.15)" : "rgba(248,113,113,0.1)", color: r.visible ? "#34d399" : "#f87171", border: `1px solid ${r.visible ? "rgba(52,211,153,0.3)" : "rgba(248,113,113,0.2)"}` }}>{r.visible ? "VISIBLE" : "HIDDEN"}</span>
+                  </div>
+                  <div style={{ color: "#94a3b8", fontSize: 13, marginBottom: 8 }}>{r.role}{r.company ? ` at ${r.company}` : ''}</div>
+                  <div style={{ color: "#e2e8f0", fontSize: 14, marginBottom: 12, fontStyle: "italic", lineHeight: 1.5 }}>"{r.review}"</div>
+                  <div style={{ color: "#fbbf24", marginBottom: 16, fontSize: 18 }}>{"★".repeat(r.rating)}{"☆".repeat(5-r.rating)}</div>
+                  <div style={{ display: "flex", gap: 8 }}>
+                    <button className="btn-ghost" onClick={() => toggleVisible(r.id)} style={{ flex: 1, fontSize: 12 }}>{r.visible ? "Hide" : "Show"}</button>
+                    <button className="btn-ghost" onClick={() => openEdit(r)} style={{ flex: 1, fontSize: 12 }}>Edit</button>
+                    <button className="btn-ghost" onClick={() => deleteReview(r.id)} style={{ color: "#f87171", flex: 1, fontSize: 12 }}>Delete</button>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
 
           {showForm && modal && (

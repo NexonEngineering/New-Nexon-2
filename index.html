@@ -105,18 +105,18 @@
 <body class="bg-pearl font-sans antialiased">
 
   <!-- NAVBAR -->
-  <nav id="navbar" class="fixed top-0 left-0 w-full z-50 transition-all duration-300 bg-transparent">
-    <div class="container mx-auto px-6 py-4 flex items-center justify-between">
+  <nav id="navbar" class="fixed top-4 left-1/2 -translate-x-1/2 w-[95%] max-w-5xl z-50 glass-navbar transition-all duration-300">
+    <div class="flex items-center justify-between">
       <a href="index.html" class="flex items-center group">
         <div class="logo">
-          <img src="https://raw.githubusercontent.com/NexonEngineering/nexonengineering.github.io/refs/heads/main/Gemini_Generated_Image_68tq6v68tq6v68tqdfdsgfsg-Photoroom.png" alt="Nexon" class="h-12 transition-transform duration-300 group-hover:scale-110" />
-          <span class="company-name text-xs lg:text-lg text-pearl font-semibold ml-2">
-            NEXON ENGINEERING SERVICES (PVT) LTD
+          <img src="https://raw.githubusercontent.com/NexonEngineering/nexonengineering.github.io/refs/heads/main/Gemini_Generated_Image_68tq6v68tq6v68tqdfdsgfsg-Photoroom.png" alt="Nexon" class="h-10 transition-transform duration-300 group-hover:scale-110" />
+          <span class="company-name text-xs lg:text-sm text-pearl font-semibold ml-2 hidden sm:inline">
+            NEXON ENGINEERING
           </span>
         </div>
       </a>
 
-      <div id="dynamic-nav" class="hidden md:flex space-x-8 text-pearl font-medium nav-links">
+      <div id="dynamic-nav" class="hidden md:flex space-x-6 text-pearl font-medium nav-links">
         <a href="index.html" class="text-royal">Home</a>
         <a href="about.html" class="hover:text-[#8FC1FA]">About</a>
         <a href="services.html" class="hover:text-[#8FC1FA]">Services</a>
@@ -125,7 +125,7 @@
         <a href="contact.html" class="hover:text-[#8FC1FA]">Contact</a>
       </div>
 
-      <a href="contact.html" class="hidden md:inline-flex items-center gap-2 px-5 py-2.5 bg-royal/80 hover:bg-royal text-pearl rounded-full text-sm font-medium transition-all duration-300 hover:shadow-lg hover:shadow-royal/30">
+      <a href="contact.html" class="hidden md:inline-flex items-center gap-2 px-4 py-2 bg-royal/80 hover:bg-royal text-pearl rounded-full text-sm font-medium transition-all duration-300 hover:shadow-lg hover:shadow-royal/30">
         <i data-feather="phone" class="w-4 h-4"></i>
         Get Quote
       </a>
@@ -135,8 +135,8 @@
       </button>
     </div>
 
-    <div id="mobile-menu" class="hidden bg-navy/95 backdrop-blur-lg text-pearl px-6 py-6 space-y-4 md:hidden border-t border-white/10">
-      <div id="dynamic-mobile-nav">
+    <div id="mobile-menu" class="hidden bg-navy/95 backdrop-blur-lg text-pearl px-6 py-6 space-y-4 md:hidden border-t border-white/10 absolute top-full left-0 w-full mt-2 rounded-b-2xl">
+      <div id="dynamic-mobile-nav" class="space-y-2">
         <!-- Mobile navigation links will be loaded dynamically -->
       </div>
       <a href="contact.html" class="inline-flex items-center gap-2 mt-4 px-5 py-2.5 bg-royal text-pearl rounded-full text-sm font-medium">
@@ -149,8 +149,8 @@
 
   <!-- HERO -->
   <section class="relative h-screen flex items-center justify-center bg-gradient-to-br from-navy via-navy to-royal overflow-hidden">
-    <!-- Animated background grid -->
-    <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(var(--accent) 1px, transparent 1px); background-size: 50px 50px;"></div>
+    <!-- Animated background grid - Brighter and smoother -->
+    <div class="absolute inset-0 opacity-30" style="background-image: radial-gradient(rgba(30,136,229,0.8) 1.5px, transparent 1.5px); background-size: 40px 40px; animation: gridMove 8s linear infinite;"></div>
     
     <div class="absolute inset-0 opacity-20">
       <div id="particles-js" class="w-full h-full"></div>
@@ -194,23 +194,23 @@
 
   <!-- STATS BAR -->
   <section id="stats-bar" class="relative -mt-16 z-20 px-6">
-    <div class="max-w-6xl mx-auto bg-navy/80 backdrop-blur-2xl rounded-[40px] p-8 md:p-12 shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-white/10 glass-card">
+    <div class="max-w-6xl mx-auto bg-navy/90 backdrop-blur-2xl rounded-[40px] p-8 md:p-12 shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-white/10">
       <div class="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 text-center">
         <div>
           <div class="text-4xl md:text-6xl font-bold gradient-text counter" data-target="50">0+</div>
-          <div class="text-pearl/60 mt-3 text-xs md:text-sm font-bold uppercase tracking-widest">Projects Done</div>
+          <div class="text-frost/70 mt-3 text-xs md:text-sm font-bold uppercase tracking-widest">Projects Done</div>
         </div>
         <div>
           <div class="text-4xl md:text-6xl font-bold gradient-text counter" data-target="30">0+</div>
-          <div class="text-pearl/60 mt-3 text-xs md:text-sm font-bold uppercase tracking-widest">Industrial Clients</div>
+          <div class="text-frost/70 mt-3 text-xs md:text-sm font-bold uppercase tracking-widest">Industrial Clients</div>
         </div>
         <div>
           <div class="text-4xl md:text-6xl font-bold gradient-text counter" data-target="8">0+</div>
-          <div class="text-pearl/60 mt-3 text-xs md:text-sm font-bold uppercase tracking-widest">Years Experience</div>
+          <div class="text-frost/70 mt-3 text-xs md:text-sm font-bold uppercase tracking-widest">Years Experience</div>
         </div>
         <div>
           <div class="text-4xl md:text-6xl font-bold gradient-text" data-stat="emergency">24/7</div>
-          <div class="text-pearl/60 mt-3 text-xs md:text-sm font-bold uppercase tracking-widest">Support</div>
+          <div class="text-frost/70 mt-3 text-xs md:text-sm font-bold uppercase tracking-widest">Support</div>
         </div>
       </div>
     </div>
@@ -654,11 +654,81 @@
     </a>
   </div>
 
+  <!-- Live Chat Widget -->
+  <button class="chat-toggle-btn" onclick="toggleChat()" id="chatToggleBtn">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v-.5z"/></svg>
+  </button>
+
+  <div class="chat-widget" id="chatWidget">
+    <div class="chat-popup">
+      <div class="chat-header">
+        <img src="https://raw.githubusercontent.com/NexonEngineering/nexonengineering.github.io/refs/heads/main/Gemini_Generated_Image_hmrljuhmrljuhmrl-Photoroom.png" alt="Nexon" style="width: 40px; height: 40px; border-radius: 50%;">
+        <div>
+          <div style="font-weight: 600; font-size: 14px;">NEXON Engineering</div>
+          <div style="font-size: 11px; opacity: 0.8;">Typically replies within minutes</div>
+        </div>
+        <button class="chat-close" onclick="toggleChat()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="chat-body" id="chatBody">
+        <div style="background: #f3f4f6; padding: 12px 16px; border-radius: 16px 16px 16px 4px; max-width: 85%; margin-bottom: 12px;">
+          <p style="color: #1f2937; font-size: 14px; margin: 0;">Hello! How can we help you today?</p>
+        </div>
+        <div style="background: #0A2463; color: white; padding: 12px 16px; border-radius: 16px 4px 16px 16px; max-width: 85%; margin-left: auto; margin-bottom: 12px;">
+          <p style="font-size: 14px; margin: 0; color: white;">Get a quote for industrial services</p>
+        </div>
+        <div style="background: #0A2463; color: white; padding: 12px 16px; border-radius: 16px 4px 16px 16px; max-width: 85%; margin-left: auto; margin-bottom: 12px;">
+          <p style="font-size: 14px; margin: 0; color: white;">Ask about maintenance</p>
+        </div>
+      </div>
+      <div class="chat-input-wrap">
+        <input type="text" id="chatInput" placeholder="Type a message..." onkeypress="handleChatKey(event)">
+        <button class="chat-submit" onclick="sendChatMessage()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
   <script src="navigation.js"></script>
   <script src="scripts.js"></script>
-  <script>feather.replace();</script>
-  
+<script>feather.replace();</script>
+   
+  <!-- Initialize Sample Data -->
+  <script>
+    // Initialize sample Sri Lankan reviews if none exist
+    (function initSampleData() {
+      try {
+        const stored = localStorage.getItem('nexon_reviews');
+        if (stored) return; // Already has data
+        
+        const sampleReviews = [
+          { id: 1, name: "Kamal Perera", role: "Factory Manager", company: "Dilmah Tea Factory", review: "Excellent industrial electrical work. The team completed our factory wiring on time and within budget. Very professional service!", rating: 5, visible: true, status: "approved" },
+          { id: 2, name: "Nimal Silva", role: "Production Director", company: "Kalupana Industries", review: "Nexon Engineering did our PLC automation upgrade. The automation system works perfectly and our production increased by 40%. Highly recommended!", rating: 5, visible: true, status: "approved" },
+          { id: 3, name: "Samantha Fernando", role: "Maintenance Head", company: "Hela Garments", review: "Great emergency support! They fixed our machine breakdown within 2 hours. Very reliable team.", rating: 5, visible: true, status: "approved" },
+          { id: 4, name: "Ruvinda Jayawardena", role: "CEO", company: "TechFlow Solutions", review: "Professional engineering services. Our solar installation was completed smoothly with excellent quality.", rating: 5, visible: true, status: "approved" },
+          { id: 5, name: "Dilshan Weeraratne", role: "Operations Manager", company: "Ocean Foods", review: "Excellent work on our motor control center upgrade. The team is knowledgeable and efficient.", rating: 5, visible: true, status: "approved" },
+          { id: 6, name: "Chamantha Rodrigo", role: "Engineer", company: "MAS Holdings", review: "Good industrial automation services. They integrated our conveyor system perfectly.", rating: 4, visible: true, status: "approved" },
+          { id: 7, name: "Ashan Perera", role: "Plant Manager", company: "Lanka Steel", review: "Reliable maintenance service. They handle all our factory maintenance needs professionally.", rating: 5, visible: true, status: "approved" },
+          { id: 8, name: "Madusha Guneratne", role: "Technical Lead", company: "Ape Cola", review: "Great CCTV and security system installation. The monitoring system works perfectly.", rating: 5, visible: true, status: "approved" },
+          { id: 9, name: "Thushan Wickramasinghe", role: "Owner", company: "Colombo Electronics", review: "Excellent machine repair service. They fixed our CNC machine that other vendors couldn't repair.", rating: 5, visible: true, status: "approved" },
+          { id: 10, name: "Prasanna Wickrama", role: "Maintenance Engineer", company: "Browthvita Lanka", review: "Very professional team. They do preventive maintenance for our factory and we've had zero breakdowns since!", rating: 5, visible: true, status: "approved" }
+        ];
+        
+        localStorage.setItem('nexon_reviews', JSON.stringify(sampleReviews));
+        
+        // Also save to Firebase
+        if (typeof writeToFirebase === 'function') {
+          writeToFirebase('reviews', sampleReviews);
+        }
+        
+        console.log('Sample Sri Lankan reviews initialized');
+      } catch(e) { console.log('Init error:', e); }
+    })();
+  </script>
+   
   <!-- Apply Firebase Updates -->
   <script>
     function applySiteUpdates() {
@@ -697,12 +767,13 @@
     function applyClientsUpdates() { /* Clients handled in clients.html */ }
 
     function applyReviewsUpdates() {
-      syncWithFirebase('nexon_reviews', (reviewsData) => {
+      syncWithFirebase('reviews', (reviewsData) => {
         const container = document.getElementById('testimonials-container');
         if (!container || !reviewsData) return;
         
         const reviews = Array.isArray(reviewsData) ? reviewsData : Object.values(reviewsData);
-        const visibleReviews = reviews.filter(r => r.visible !== false);
+        // Only show approved reviews (status === 'approved' OR no status set for backward compatibility)
+        const visibleReviews = reviews.filter(r => (r.visible !== false && r.status === 'approved') || (r.visible !== false && !r.status));
         
         if (visibleReviews.length === 0) {
           container.innerHTML = '';
@@ -729,6 +800,38 @@
     // Run on load
     setTimeout(applySiteUpdates, 500);
     setTimeout(applyReviewsUpdates, 800);
+
+    // Chat Widget Functions
+    function toggleChat() {
+      const widget = document.getElementById('chatWidget');
+      widget.classList.toggle('active');
+    }
+
+    function handleChatKey(e) {
+      if (e.key === 'Enter') sendChatMessage();
+    }
+
+    function sendChatMessage() {
+      const input = document.getElementById('chatInput');
+      const message = input.value.trim();
+      if (!message) return;
+      
+      const chatBody = document.getElementById('chatBody');
+      const userMsg = document.createElement('div');
+      userMsg.style.cssText = 'background: #0A2463; color: white; padding: 12px 16px; border-radius: 16px 4px 16px 16px; max-width: 85%; margin-left: auto; margin-bottom: 12px;';
+      userMsg.innerHTML = `<p style="font-size: 14px; margin: 0; color: white;">${message}</p>`;
+      chatBody.appendChild(userMsg);
+      input.value = '';
+      chatBody.scrollTop = chatBody.scrollHeight;
+      
+      setTimeout(() => {
+        const reply = document.createElement('div');
+        reply.style.cssText = 'background: #f3f4f6; padding: 12px 16px; border-radius: 16px 16px 16px 4px; max-width: 85%; margin-bottom: 12px;';
+        reply.innerHTML = `<p style="color: #1f2937; font-size: 14px; margin: 0;">Thank you for your message! Our team will contact you on WhatsApp shortly.</p>`;
+        chatBody.appendChild(reply);
+        chatBody.scrollTop = chatBody.scrollHeight;
+      }, 1000);
+    }
   </script>
 </body>
 </html>

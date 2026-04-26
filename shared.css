@@ -1,5 +1,56 @@
 /* shared.css - NEXON Engineering Services - Enhanced UI */
 
+/* Smooth Scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Grid Animation */
+@keyframes gridMove {
+  0% { transform: translateY(0) translateX(0); }
+  100% { transform: translateY(40px) translateX(40px); }
+}
+
+/* Glass Navbar - Frosted Glass Effect */
+.glass-navbar {
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  background: rgba(10, 36, 99, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 30px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  padding: 12px 30px;
+  max-width: 95%;
+}
+
+.glass-navbar .nav-links a {
+  color: var(--pearl);
+  transition: color 0.3s ease, text-shadow 0.3s ease;
+}
+
+.glass-navbar .nav-links a:hover,
+.glass-navbar .nav-links a.text-royal {
+  color: #00d4ff;
+  text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+}
+
+.glass-navbar .company-name {
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .glass-navbar {
+    border-radius: 20px;
+    padding: 10px 20px;
+    top: 10px;
+  }
+}
+
 :root {
   --primary: #0A2463;
   --secondary: #3E5C76;
@@ -163,6 +214,123 @@ html, body {
   100% {
     box-shadow: 0 0 0 0 rgba(37, 211, 102, 0);
   }
+}
+
+/* Chat Popup Widget */
+.chat-widget {
+  position: fixed;
+  right: 20px;
+  bottom: 100px;
+  z-index: 998;
+  display: none;
+}
+
+.chat-widget.active {
+  display: block;
+}
+
+.chat-popup {
+  position: absolute;
+  right: 80px;
+  bottom: 0;
+  width: 320px;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+  overflow: hidden;
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: none; }
+}
+
+.chat-header {
+  background: linear-gradient(135deg, #0A2463, #1E88E5);
+  color: white;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.chat-body {
+  padding: 16px;
+  max-height: 250px;
+  overflow-y: auto;
+}
+
+.chat-input-wrap {
+  display: flex;
+  gap: 8px;
+  padding: 12px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.chat-input-wrap input {
+  flex: 1;
+  padding: 10px 14px;
+  border: 1px solid #e5e7eb;
+  border-radius: 20px;
+  outline: none;
+  font-size: 14px;
+}
+
+.chat-input-wrap input:focus {
+  border-color: #1E88E5;
+}
+
+.chat-submit {
+  background: #1E88E5;
+  color: white;
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.chat-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  opacity: 0.8;
+}
+
+.chat-toggle-btn {
+  position: fixed;
+  right: 20px;
+  bottom: 100px;
+  width: 60px;
+  height: 60px;
+  background: #0d47a1;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 15px rgba(37, 211, 102, 0.6), 0 0 30px rgba(37, 211, 102, 0.6);
+  cursor: pointer;
+  z-index: 997;
+  border: none;
+}
+
+.chat-toggle-btn img {
+  width: 36px;
+  height: 36px;
+}
+
+.chat-toggle-btn svg {
+  width: 28px;
+  height: 28px;
+  color: white;
 }
 
 .logo {

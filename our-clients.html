@@ -7,6 +7,16 @@
 
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
+    let clientsData = null;
+    
+    (function() {
+      try {
+        const stored = localStorage.getItem('nexon_clients');
+        if (stored) { clientsData = JSON.parse(stored); }
+      } catch(e) { console.log('Load error:', e); }
+    })();
+  </script>
+  <script>
     tailwind.config = {
       theme: {
         extend: {
@@ -89,18 +99,18 @@
   <div id="scroll-progress" class="scroll-progress" style="width: 0%"></div>
 
   <!-- NAVBAR -->
-  <nav id="navbar" class="fixed top-0 left-0 w-full z-50 transition-all duration-500 bg-navy/95 backdrop-blur-lg shadow-sm">
-    <div class="container mx-auto px-6 py-4 flex items-center justify-between">
+  <nav id="navbar" class="fixed top-4 left-1/2 -translate-x-1/2 w-[95%] max-w-5xl z-50 glass-navbar transition-all duration-300">
+    <div class="flex items-center justify-between">
       <a href="index.html" class="flex items-center group">
         <div class="logo">
-          <img src="images/logo-small.png" alt="Nexon" class="h-12 transition-transform group-hover:scale-105" />
-          <span class="company-name text-xs lg:text-lg text-pearl font-semibold ml-2">
-            NEXON ENGINEERING SERVICES (PVT) LTD
+          <img src="images/logo-small.png" alt="Nexon" class="h-10 transition-transform group-hover:scale-105" />
+          <span class="company-name text-xs lg:text-sm text-pearl font-semibold ml-2 hidden sm:inline">
+            NEXON ENGINEERING
           </span>
         </div>
       </a>
 
-      <div class="hidden md:flex space-x-8 text-pearl font-medium nav-links" id="dynamic-nav">
+      <div class="hidden md:flex space-x-6 text-pearl font-medium nav-links" id="dynamic-nav">
         <a href="index.html" class="hover:text-[#8FC1FA]">Home</a>
         <a href="about.html" class="hover:text-[#8FC1FA]">About</a>
         <a href="services.html" class="hover:text-[#8FC1FA]">Services</a>
@@ -109,7 +119,7 @@
         <a href="contact.html" class="hover:text-[#8FC1FA]">Contact</a>
       </div>
 
-      <a href="contact.html" class="hidden md:inline-flex items-center gap-2 px-5 py-2.5 bg-royal hover:bg-[#1976D2] text-pearl rounded-full text-sm font-medium transition-all hover:shadow-lg">
+      <a href="contact.html" class="hidden md:inline-flex items-center gap-2 px-4 py-2 bg-royal/80 hover:bg-royal text-pearl rounded-full text-sm font-medium transition-all hover:shadow-lg">
         Get Quote
       </a>
 
@@ -169,39 +179,40 @@
         </p>
       </div>
 
-      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6" id="clients-grid">
         
-        <div id="client-1" class="client-card rounded-2xl overflow-hidden transition-all duration-500 hover:-translate-y-2 cursor-pointer" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(30,136,229,0.2); backdrop-filter: blur(10px);" onclick="openClientLink(1)">
+        <!-- Fallback static clients if no data -->
+        <div class="client-card rounded-2xl overflow-hidden transition-all duration-500 hover:-translate-y-2 cursor-pointer" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(30,136,229,0.2); backdrop-filter: blur(10px);">
           <div class="p-8 flex items-center justify-center h-48">
             <img src="images/client-1.png" class="max-h-24 w-auto object-contain transition" style="opacity: 0.9;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.9'" />
           </div>
         </div>
 
-        <div id="client-2" class="client-card rounded-2xl overflow-hidden transition-all duration-500 hover:-translate-y-2 cursor-pointer" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(30,136,229,0.2); backdrop-filter: blur(10px);" onclick="openClientLink(2)">
+        <div class="client-card rounded-2xl overflow-hidden transition-all duration-500 hover:-translate-y-2 cursor-pointer" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(30,136,229,0.2); backdrop-filter: blur(10px);">
           <div class="p-8 flex items-center justify-center h-48">
             <img src="images/client-2.png" class="max-h-24 w-auto object-contain transition" style="opacity: 0.9;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.9'" />
           </div>
         </div>
 
-        <div id="client-3" class="client-card rounded-2xl overflow-hidden transition-all duration-500 hover:-translate-y-2 cursor-pointer" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(30,136,229,0.2); backdrop-filter: blur(10px);" onclick="openClientLink(3)">
+        <div class="client-card rounded-2xl overflow-hidden transition-all duration-500 hover:-translate-y-2 cursor-pointer" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(30,136,229,0.2); backdrop-filter: blur(10px);">
           <div class="p-8 flex items-center justify-center h-48">
             <img src="images/client-3.png" class="max-h-24 w-auto object-contain transition" style="opacity: 0.9;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.9'" />
           </div>
         </div>
 
-        <div id="client-4" class="client-card rounded-2xl overflow-hidden transition-all duration-500 hover:-translate-y-2 cursor-pointer" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(30,136,229,0.2); backdrop-filter: blur(10px);" onclick="openClientLink(4)">
+        <div class="client-card rounded-2xl overflow-hidden transition-all duration-500 hover:-translate-y-2 cursor-pointer" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(30,136,229,0.2); backdrop-filter: blur(10px);">
           <div class="p-8 flex items-center justify-center h-48">
             <img src="images/client-4.png" class="max-h-24 w-auto object-contain transition" style="opacity: 0.9;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.9'" />
           </div>
         </div>
 
-        <div id="client-5" class="client-card rounded-2xl overflow-hidden transition-all duration-500 hover:-translate-y-2 cursor-pointer" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(30,136,229,0.2); backdrop-filter: blur(10px);" onclick="openClientLink(5)">
+        <div class="client-card rounded-2xl overflow-hidden transition-all duration-500 hover:-translate-y-2 cursor-pointer" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(30,136,229,0.2); backdrop-filter: blur(10px);">
           <div class="p-8 flex items-center justify-center h-48">
             <img src="images/client-5.png" class="max-h-24 w-auto object-contain transition" style="opacity: 0.9;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.9'" />
           </div>
         </div>
 
-        <div id="client-6" class="client-card rounded-2xl overflow-hidden transition-all duration-500 hover:-translate-y-2 cursor-pointer" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(30,136,229,0.2); backdrop-filter: blur(10px);" onclick="openClientLink(6)">
+        <div class="client-card rounded-2xl overflow-hidden transition-all duration-500 hover:-translate-y-2 cursor-pointer" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(30,136,229,0.2); backdrop-filter: blur(10px);">
           <div class="p-8 flex items-center justify-center h-48">
             <img src="images/client-6.png" class="max-h-24 w-auto object-contain transition" style="opacity: 0.9;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.9'" />
           </div>
@@ -295,41 +306,66 @@
   <script src="scripts.js"></script>
   <script>feather.replace();</script>
   <script>
-    // Firebase client links sync
-    let firebaseClients = {};
+    let clientsData = null;
     
-    function openClientLink(clientId) {
-      const link = firebaseClients[clientId];
-      if (link && link.link) {
-        window.open(link.link, '_blank');
-      }
-      // If no link, do nothing (stay on page)
-    }
-    
-    // Real-time sync with Firebase
-    if (typeof syncWithFirebase === 'function') {
-      syncWithFirebase('clients', (clientsData) => {
-        if (clientsData) {
-          firebaseClients = clientsData;
-          // Update each client card onclick handler
-          [1,2,3,4,5,6].forEach(id => {
-            const card = document.getElementById('client-' + id);
-            if (card && clientsData[id] && clientsData[id].link) {
-              card.onclick = function() { window.open(clientsData[id].link, '_blank'); };
-              card.style.cursor = 'pointer';
-            }
-          });
-        }
-      });
-    }
-    
-    // Fallback to localStorage for client links (if Firebase not available)
-    function loadClientLinks() {
+    (function() {
       try {
         const stored = localStorage.getItem('nexon_clients');
-        if (!stored) return null;
-        return JSON.parse(stored);
-      } catch(e) { return null; }
+        if (stored) { clientsData = JSON.parse(stored); renderClients(); }
+      } catch(e) { console.log('Load error:', e); }
+    })();
+    
+    function renderClients() {
+      const container = document.getElementById('clients-grid');
+      if (!container) return;
+      
+      if (!clientsData || !Array.isArray(clientsData) || clientsData.length === 0) {
+        container.style.display = 'grid';
+        return;
+      }
+      
+      let html = '';
+      clientsData.forEach((c, index) => {
+        if (c.visible === false) return;
+        const clientNum = index + 1;
+        html += `
+          <div id="client-${clientNum}" class="client-card rounded-2xl overflow-hidden transition-all duration-500 hover:-translate-y-2 cursor-pointer" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(30,136,229,0.2); backdrop-filter: blur(10px);" onclick="window.open('${c.link || '#'}', '_blank')">
+            <div class="p-8 flex items-center justify-center h-48">
+              <img src="${c.image || 'images/client-' + clientNum + '.png'}" class="max-h-24 w-auto object-contain transition" style="opacity: 0.9;" onerror="this.style.display='none'" />
+            </div>
+          </div>`;
+      });
+      container.innerHTML = html;
+      if (window.feather) feather.replace();
+    }
+    
+    // Firebase sync
+    function syncClientsFromFirebase(data) {
+      if (data) {
+        try {
+          localStorage.setItem('nexon_clients', JSON.stringify(data));
+          if (!clientsData) {
+            clientsData = data;
+            renderClients();
+          }
+        } catch(e) {}
+      }
+    }
+    
+    // Run sync
+    setTimeout(() => {
+      try {
+        if (typeof syncWithFirebase === 'function') {
+          syncWithFirebase('clients', syncClientsFromFirebase);
+        }
+      } catch(e) {}
+    }, 500);
+    
+    function openClientLink(clientId) {
+      const link = clientsData && clientsData[clientId-1] && clientsData[clientId-1].link;
+      if (link) {
+        window.open(link, '_blank');
+      }
     }
     
     // Page visibility check

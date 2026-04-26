@@ -8,13 +8,24 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     let projectsData = null;
+    let categoriesData = [];
     
     (function() {
       try {
         const stored = localStorage.getItem('nexon_projects');
-        if (stored) { projectsData = JSON.parse(stored); renderProjects(); }
+        if (stored) { 
+          projectsData = JSON.parse(stored); 
+          extractCategories();
+        }
       } catch(e) { console.log('Load error:', e); }
     })();
+    
+    function extractCategories() {
+      if (!projectsData || !Array.isArray(projectsData)) return;
+      const cats = new Set();
+      projectsData.forEach(p => { if (p.category) cats.add(p.category); });
+      categoriesData = Array.from(cats);
+    }
   </script>
   <script>
     tailwind.config = {
@@ -104,18 +115,18 @@
   <div id="scroll-progress" class="scroll-progress" style="width: 0%"></div>
 
   <!-- NAVBAR -->
-  <nav id="navbar" class="fixed top-0 left-0 w-full z-50 transition-all duration-500 bg-navy/95 backdrop-blur-lg shadow-sm">
-    <div class="container mx-auto px-6 py-4 flex items-center justify-between">
+  <nav id="navbar" class="fixed top-4 left-1/2 -translate-x-1/2 w-[95%] max-w-5xl z-50 glass-navbar transition-all duration-300">
+    <div class="flex items-center justify-between">
       <a href="index.html" class="flex items-center group">
         <div class="logo">
-          <img src="images/logo-small.png" alt="Nexon" class="h-12 transition-transform group-hover:scale-105" />
-          <span class="company-name text-xs lg:text-lg text-pearl font-semibold ml-2">
-            NEXON ENGINEERING SERVICES (PVT) LTD
+          <img src="images/logo-small.png" alt="Nexon" class="h-10 transition-transform group-hover:scale-105" />
+          <span class="company-name text-xs lg:text-sm text-pearl font-semibold ml-2 hidden sm:inline">
+            NEXON ENGINEERING
           </span>
         </div>
       </a>
 
-      <div class="hidden md:flex space-x-8 text-pearl font-medium nav-links" id="dynamic-nav">
+      <div class="hidden md:flex space-x-6 text-pearl font-medium nav-links" id="dynamic-nav">
         <a href="index.html" class="hover:text-[#8FC1FA]">Home</a>
         <a href="about.html" class="hover:text-[#8FC1FA]">About</a>
         <a href="services.html" class="hover:text-[#8FC1FA]">Services</a>
@@ -124,7 +135,7 @@
         <a href="contact.html" class="hover:text-[#8FC1FA]">Contact</a>
       </div>
 
-      <a href="contact.html" class="hidden md:inline-flex items-center gap-2 px-5 py-2.5 bg-royal hover:bg-[#1976D2] text-pearl rounded-full text-sm font-medium transition-all hover:shadow-lg">
+      <a href="contact.html" class="hidden md:inline-flex items-center gap-2 px-4 py-2 bg-royal/80 hover:bg-royal text-pearl rounded-full text-sm font-medium transition-all hover:shadow-lg">
         Get Quote
       </a>
 
@@ -170,207 +181,39 @@
   <!-- Filter Buttons - Dark Theme -->
   <section class="py-6 sticky top-16 z-40" style="background: rgba(5,25,55,0.95); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(30,136,229,0.2);">
     <div class="container mx-auto px-6">
-      <div class="flex flex-wrap justify-center gap-3">
-        <button class="filter-btn active px-5 py-2 rounded-full text-sm font-medium transition-all" data-filter="all" style="background: linear-gradient(135deg,#0077b6,#00b4d8); color: #fff;" data-setting="projectsFilterAll">All Projects</button>
-        <button class="filter-btn px-5 py-2 rounded-full text-sm font-medium transition-all" data-filter="automation" style="background: rgba(255,255,255,0.06); color: #94a3b8; border: 1px solid rgba(255,255,255,0.1);" data-setting="projectsFilterAutomation">Automation</button>
-        <button class="filter-btn px-5 py-2 rounded-full text-sm font-medium transition-all" data-filter="electrical" style="background: rgba(255,255,255,0.06); color: #94a3b8; border: 1px solid rgba(255,255,255,0.1);" data-setting="projectsFilterElectrical">Electrical</button>
-        <button class="filter-btn px-5 py-2 rounded-full text-sm font-medium transition-all" data-filter="solar" style="background: rgba(255,255,255,0.06); color: #94a3b8; border: 1px solid rgba(255,255,255,0.1);" data-setting="projectsFilterSolar">Solar</button>
-        <button class="filter-btn px-5 py-2 rounded-full text-sm font-medium transition-all" data-filter="security" style="background: rgba(255,255,255,0.06); color: #94a3b8; border: 1px solid rgba(255,255,255,0.1);" data-setting="projectsFilterSecurity">Security</button>
+      <div class="flex flex-wrap justify-center gap-3" id="filter-buttons">
+        <button class="filter-btn active px-5 py-2 rounded-full text-sm font-medium transition-all" data-filter="all" style="background: linear-gradient(135deg,#0077b6,#00b4d8); color: #fff;">All Projects</button>
+        <button class="filter-btn px-5 py-2 rounded-full text-sm font-medium transition-all" data-filter="automation" style="background: rgba(255,255,255,0.06); color: #94a3b8; border: 1px solid rgba(255,255,255,0.1);">Automation</button>
+        <button class="filter-btn px-5 py-2 rounded-full text-sm font-medium transition-all" data-filter="electrical" style="background: rgba(255,255,255,0.06); color: #94a3b8; border: 1px solid rgba(255,255,255,0.1);">Electrical</button>
+        <button class="filter-btn px-5 py-2 rounded-full text-sm font-medium transition-all" data-filter="solar" style="background: rgba(255,255,255,0.06); color: #94a3b8; border: 1px solid rgba(255,255,255,0.1);">Solar</button>
+        <button class="filter-btn px-5 py-2 rounded-full text-sm font-medium transition-all" data-filter="security" style="background: rgba(255,255,255,0.06); color: #94a3b8; border: 1px solid rgba(255,255,255,0.1);">Security</button>
       </div>
     </div>
   </section>
 
-  <!-- Projects Grid - Dark Theme -->
+<!-- Dynamic Projects Container -->
   <section class="py-16" style="background: linear-gradient(180deg, #020917 0%, #0d1b38 100%);">
-    <div class="container mx-auto px-6">
+    <div class="container mx-auto px-6" id="projects-container">
+      <!-- Projects will be loaded dynamically from localStorage/Firebase -->
+    </div>
+  </section>
 
-      <!-- Industrial Automation -->
-      <div class="mb-16">
-        <h2 class="text-2xl font-bold text-navy mb-8 fade-in-left flex items-center gap-3">
-          <span class="w-10 h-10 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-xl flex items-center justify-center">
-            <i data-feather="cpu" class="w-5 h-5 text-pearl"></i>
-          </span>
-          Industrial Automation
-        </h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          
-          <div class="project-card rounded-2xl overflow-hidden hover:shadow-2xl transition-all duration-500" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(30,136,229,0.15);" data-category="automation">
-            <div class="relative h-56 overflow-hidden">
-              <img src="https://picsum.photos/seed/industrial1/640/360" alt="PLC Control Panel" class="w-full h-full object-cover" />
-              <div class="overlay"></div>
-              <div class="absolute top-4 left-4">
-                <span class="px-3 py-1 bg-emerald-500 text-pearl text-xs font-medium rounded-full">Automation</span>
-              </div>
-              <div class="content absolute bottom-0 left-0 right-0 p-6">
-                <a href="contact.html" class="inline-flex items-center gap-2 text-pearl font-medium hover:gap-3 transition-all">
-                  View Details <i data-feather="arrow-right" class="w-4 h-4"></i>
-                </a>
-              </div>
-            </div>
-            <div class="p-6">
-              <h3 class="text-lg font-bold mb-2" style="color: #e2e8f0;">Assembly Line PLC Integration</h3>
-              <p class="text-sm mb-4 leading-relaxed" style="color: rgba(225,245,254,0.65);">Complete PLC programming and HMI interface for a textile manufacturing plant, reducing manual intervention by 60%.</p>
-              <div class="flex flex-wrap gap-2">
-                <span class="text-xs px-2 py-1 rounded" style="background: rgba(30,136,229,0.15); color: #7dd3fc;">Siemens PLC</span>
-                <span class="text-xs px-2 py-1 rounded" style="background: rgba(30,136,229,0.15); color: #7dd3fc;">HMI Design</span>
-                <span class="text-xs px-2 py-1 rounded" style="background: rgba(30,136,229,0.15); color: #7dd3fc;">Integration</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="project-card rounded-2xl overflow-hidden hover:shadow-2xl transition-all duration-500" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(30,136,229,0.15);" data-category="automation">
-            <div class="relative h-56 overflow-hidden">
-              <img src="https://picsum.photos/seed/conveyor2/640/360" alt="Conveyor System" class="w-full h-full object-cover" />
-              <div class="overlay"></div>
-              <div class="absolute top-4 left-4">
-                <span class="px-3 py-1 bg-emerald-500 text-pearl text-xs font-medium rounded-full">Automation</span>
-              </div>
-              <div class="content absolute bottom-0 left-0 right-0 p-6">
-                <a href="contact.html" class="inline-flex items-center gap-2 text-pearl font-medium hover:gap-3 transition-all">
-                  View Details <i data-feather="arrow-right" class="w-4 h-4"></i>
-                </a>
-              </div>
-            </div>
-            <div class="p-6">
-              <h3 class="text-lg font-bold mb-2" style="color: #e2e8f0;">Automated Conveyor System</h3>
-              <p class="text-sm mb-4 leading-relaxed" style="color: rgba(225,245,254,0.65);">Design and installation of variable speed conveyor system with sensors and programmable logic for sorting facility.</p>
-              <div class="flex flex-wrap gap-2">
-                <span class="text-xs px-2 py-1 rounded" style="background: rgba(30,136,229,0.15); color: #7dd3fc;">VFD Control</span>
-                <span class="text-xs px-2 py-1 rounded" style="background: rgba(30,136,229,0.15); color: #7dd3fc;">Sensors</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="project-card rounded-2xl overflow-hidden hover:shadow-2xl transition-all duration-500" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(30,136,229,0.15);" data-category="automation">
-            <div class="relative h-56 overflow-hidden">
-              <img src="https://picsum.photos/seed/robotics3/640/360" alt="Robotic Arm" class="w-full h-full object-cover" />
-              <div class="overlay"></div>
-              <div class="absolute top-4 left-4">
-                <span class="px-3 py-1 bg-emerald-500 text-pearl text-xs font-medium rounded-full">Automation</span>
-              </div>
-              <div class="content absolute bottom-0 left-0 right-0 p-6">
-                <a href="contact.html" class="inline-flex items-center gap-2 text-pearl font-medium hover:gap-3 transition-all">
-                  View Details <i data-feather="arrow-right" class="w-4 h-4"></i>
-                </a>
-              </div>
-            </div>
-            <div class="p-6">
-              <h3 class="text-lg font-bold mb-2" style="color: #e2e8f0;">Pick-and-Place Robotic Cell</h3>
-              <p class="text-sm mb-4 leading-relaxed" style="color: rgba(225,245,254,0.65);">Installed and programmed robotic arm for packaging line, increasing throughput by 40% with consistent accuracy.</p>
-              <div class="flex flex-wrap gap-2">
-                <span class="text-xs px-2 py-1 rounded" style="background: rgba(30,136,229,0.15); color: #7dd3fc;">Robotics</span>
-                <span class="text-xs px-2 py-1 rounded" style="background: rgba(30,136,229,0.15); color: #7dd3fc;">Packaging</span>
-              </div>
-            </div>
-          </div>
-
+<!-- CTA Section -->
+      <div class="bg-gradient-to-r from-royal to-indigo rounded-3xl p-10 md:p-16 text-center relative overflow-hidden">
+        <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(circle at 2px 2px, white 1px, transparent 0); background-size: 30px 30px;"></div>
+        <div class="relative z-10">
+          <h3 class="text-3xl font-bold text-pearl mb-4">Have a Project in Mind?</h3>
+          <p class="text-pearl/80 text-lg mb-8 max-w-2xl mx-auto">Contact us to discuss your requirements and get a free consultation.</p>
+          <a href="contact.html" class="inline-flex items-center gap-2 px-8 py-4 bg-pearl hover:bg-white text-navy rounded-full font-semibold transition-all hover:shadow-xl">
+            Get in Touch <i data-feather="arrow-right" class="w-5 h-5"></i>
+          </a>
         </div>
       </div>
 
-      <!-- Electrical & Machinery -->
-      <div class="mb-16">
-        <h2 class="text-2xl font-bold mb-8 fade-in-left flex items-center gap-3" style="color: #e2e8f0;">
-          <span class="w-10 h-10 bg-gradient-to-br from-amber-500 to-orange-500 rounded-xl flex items-center justify-center">
-            <i data-feather="zap" class="w-5 h-5 text-pearl"></i>
-          </span>
-          Electrical & Machinery
-        </h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+    </div>
+  </section>
 
-          <div class="project-card rounded-2xl overflow-hidden hover:shadow-2xl transition-all duration-500" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(30,136,229,0.15);" data-category="electrical">
-            <div class="relative h-56 overflow-hidden">
-              <img src="https://picsum.photos/seed/electrical4/640/360" alt="Control Panel" class="w-full h-full object-cover" />
-              <div class="overlay"></div>
-              <div class="absolute top-4 left-4">
-                <span class="px-3 py-1 bg-amber-500 text-pearl text-xs font-medium rounded-full">Electrical</span>
-              </div>
-              <div class="content absolute bottom-0 left-0 right-0 p-6">
-                <a href="contact.html" class="inline-flex items-center gap-2 text-pearl font-medium hover:gap-3 transition-all">
-                  View Details <i data-feather="arrow-right" class="w-4 h-4"></i>
-                </a>
-              </div>
-            </div>
-            <div class="p-6">
-              <h3 class="text-lg font-bold mb-2" style="color: #e2e8f0;">Factory Electrical Rewiring</h3>
-              <p class="text-sm mb-4 leading-relaxed" style="color: rgba(225,245,254,0.65);">Complete rewire of 5,000 sq ft manufacturing facility including new distribution boards, cable routing, and safety systems.</p>
-              <div class="flex flex-wrap gap-2">
-                <span class="text-xs px-2 py-1 rounded" style="background: rgba(30,136,229,0.15); color: #7dd3fc;">3-Phase</span>
-                <span class="text-xs px-2 py-1 rounded" style="background: rgba(30,136,229,0.15); color: #7dd3fc;">Distribution</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="project-card rounded-2xl overflow-hidden hover:shadow-2xl transition-all duration-500" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(30,136,229,0.15);" data-category="electrical">
-            <div class="relative h-56 overflow-hidden">
-              <img src="https://picsum.photos/seed/machine5/640/360" alt="CNC Machine" class="w-full h-full object-cover" />
-              <div class="overlay"></div>
-              <div class="absolute top-4 left-4">
-                <span class="px-3 py-1 bg-amber-500 text-pearl text-xs font-medium rounded-full">Electrical</span>
-              </div>
-              <div class="content absolute bottom-0 left-0 right-0 p-6">
-                <a href="contact.html" class="inline-flex items-center gap-2 text-pearl font-medium hover:gap-3 transition-all">
-                  View Details <i data-feather="arrow-right" class="w-4 h-4"></i>
-                </a>
-              </div>
-            </div>
-            <div class="p-6">
-              <h3 class="text-lg font-bold mb-2" style="color: #e2e8f0;">CNC Machine Retrofit</h3>
-              <p class="text-sm mb-4 leading-relaxed" style="color: rgba(225,245,254,0.65);">Upgraded 15-year-old CNC machine with modern controller, servo drives, and PLC integration for improved precision.</p>
-              <div class="flex flex-wrap gap-2">
-                <span class="text-xs px-2 py-1 rounded" style="background: rgba(30,136,229,0.15); color: #7dd3fc;">Retrofit</span>
-                <span class="text-xs px-2 py-1 rounded" style="background: rgba(30,136,229,0.15); color: #7dd3fc;">CNC</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="project-card rounded-2xl overflow-hidden hover:shadow-2xl transition-all duration-500" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(30,136,229,0.15);" data-category="electrical">
-            <div class="relative h-56 overflow-hidden">
-              <img src="https://picsum.photos/seed/motor6/640/360" alt="Motor Installation" class="w-full h-full object-cover" />
-              <div class="overlay"></div>
-              <div class="absolute top-4 left-4">
-                <span class="px-3 py-1 bg-amber-500 text-pearl text-xs font-medium rounded-full">Electrical</span>
-              </div>
-              <div class="content absolute bottom-0 left-0 right-0 p-6">
-                <a href="contact.html" class="inline-flex items-center gap-2 text-pearl font-medium hover:gap-3 transition-all">
-                  View Details <i data-feather="arrow-right" class="w-4 h-4"></i>
-                </a>
-              </div>
-            </div>
-            <div class="p-6">
-              <h3 class="text-lg font-bold mb-2" style="color: #e2e8f0;">Motor Control Center Upgrade</h3>
-              <p class="text-sm mb-4 leading-relaxed" style="color: rgba(225,245,254,0.65);">Installed new MCC with VFDs for 12 motors in beverage processing plant, achieving 25% energy savings.</p>
-              <div class="flex flex-wrap gap-2">
-                <span class="text-xs px-2 py-1 rounded" style="background: rgba(30,136,229,0.15); color: #7dd3fc;">VFD</span>
-                <span class="text-xs px-2 py-1 rounded" style="background: rgba(30,136,229,0.15); color: #7dd3fc;">Energy Saving</span>
-              </div>
-            </div>
-          </div>
-
-        </div>
-      </div>
-
-      <!-- Solar & Security -->
-      <div class="mb-16">
-        <h2 class="text-2xl font-bold text-navy mb-8 fade-in-left flex items-center gap-3">
-          <span class="w-10 h-10 bg-gradient-to-br from-yellow-500 to-amber-500 rounded-xl flex items-center justify-center">
-            <i data-feather="sun" class="w-5 h-5 text-pearl"></i>
-          </span>
-          Solar & Security
-        </h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-
-          <div class="project-card rounded-2xl overflow-hidden hover:shadow-2xl transition-all duration-500" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(30,136,229,0.15);" data-category="solar">
-            <div class="relative h-56 overflow-hidden">
-              <img src="https://picsum.photos/seed/solar7/640/360" alt="Solar Installation" class="w-full h-full object-cover" />
-              <div class="overlay"></div>
-              <div class="absolute top-4 left-4">
-                <span class="px-3 py-1 bg-yellow-500 text-pearl text-xs font-medium rounded-full">Solar</span>
-              </div>
-              <div class="content absolute bottom-0 left-0 right-0 p-6">
-                <a href="contact.html" class="inline-flex items-center gap-2 text-pearl font-medium hover:gap-3 transition-all">
-                  View Details <i data-feather="arrow-right" class="w-4 h-4"></i>
-                </a>
-              </div>
+  <!-- FOOTER -->
             </div>
             <div class="p-6">
               <h3 class="text-lg font-bold mb-2" style="color: #e2e8f0;">50kW Factory Solar System</h3>
@@ -542,26 +385,40 @@
     });
     
     function renderProjects() {
-      if (!projectsData || !Array.isArray(projectsData)) return;
-      
       const container = document.getElementById('projects-container');
       if (!container) return;
+      
+      if (!projectsData || !Array.isArray(projectsData) || projectsData.length === 0) {
+        container.innerHTML = '<div class="text-center text-pearl/60 py-20"><p class="text-xl">No projects yet. Add some from the admin portal.</p></div>';
+        return;
+      }
       
       let html = '';
       projectsData.forEach(p => {
         if (p.visible === false) return;
+        const cat = (p.category || 'Project').toLowerCase();
+        const catColors = { automation: 'emerald', electrical: 'amber', solar: 'yellow', security: 'violet', fabrication: 'rose' };
+        const color = catColors[cat] || 'emerald';
         html += `
-          <div class="project-card bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 group">
+          <div class="project-card rounded-2xl overflow-hidden hover:shadow-2xl transition-all duration-500" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(30,136,229,0.15);" data-category="${cat}">
             <div class="relative h-56 overflow-hidden">
-              <img src="${p.image || 'https://picsum.photos/seed/' + p.id + '/640/360'}" class="w-full h-full object-cover" alt="${p.title}" onerror="this.src='https://picsum.photos/seed/project${p.id}/640/360'">
-              <div class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-sm font-medium text-navy">${p.category || 'Project'}</div>
+              <img src="${p.image || 'https://picsum.photos/seed/' + (p.id || 'project') + '/640/360'}" alt="${p.title}" class="w-full h-full object-cover" onerror="this.src='https://picsum.photos/seed/project'${p.id || '1'}'/640/360'" />
+              <div class="overlay"></div>
+              <div class="absolute top-4 left-4">
+                <span class="px-3 py-1 bg-${color}-500 text-pearl text-xs font-medium rounded-full">${p.category || 'Project'}</span>
+              </div>
+              <div class="content absolute bottom-0 left-0 right-0 p-6">
+                <a href="contact.html" class="inline-flex items-center gap-2 text-pearl font-medium hover:gap-3 transition-all">
+                  View Details <i data-feather="arrow-right" class="w-4 h-4"></i>
+                </a>
+              </div>
             </div>
             <div class="p-6">
-              <h3 class="text-xl font-bold text-navy mb-2">${p.title}</h3>
-              <p class="text-indigo/80 mb-4">${p.description}</p>
-              <div class="flex items-center justify-between text-sm text-gray-500">
-                <span class="flex items-center gap-1"><i data-feather="user" class="w-4 h-4"></i> ${p.client || 'Client'}</span>
-                <span class="flex items-center gap-1"><i data-feather="calendar" class="w-4 h-4"></i> ${p.year || '2024'}</span>
+              <h3 class="text-lg font-bold mb-2" style="color: #e2e8f0;">${p.title}</h3>
+              <p class="text-sm mb-4 leading-relaxed" style="color: rgba(225,245,254,0.65);">${p.description}</p>
+              <div class="flex flex-wrap gap-2">
+                <span class="text-xs px-2 py-1 rounded" style="background: rgba(30,136,229,0.15); color: #7dd3fc;">${p.client || 'Client'}</span>
+                <span class="text-xs px-2 py-1 rounded" style="background: rgba(30,136,229,0.15); color: #7dd3fc;">${p.year || '2024'}</span>
               </div>
             </div>
           </div>`;
@@ -570,7 +427,57 @@
       if (window.feather) feather.replace();
     }
     
-    setTimeout(renderProjects, 500);
+    function renderCategoryFilters() {
+      const container = document.getElementById('filter-buttons');
+      if (!container || !categoriesData.length) return;
+      
+      let html = '<button class="filter-btn active px-5 py-2 rounded-full text-sm font-medium transition-all" data-filter="all" style="background: linear-gradient(135deg,#0077b6,#00b4d8); color: #fff;">All Projects</button>';
+      categoriesData.forEach(cat => {
+        html += `<button class="filter-btn px-5 py-2 rounded-full text-sm font-medium transition-all" data-filter="${cat.toLowerCase()}" style="background: rgba(255,255,255,0.06); color: #94a3b8; border: 1px solid rgba(255,255,255,0.1);">${cat}</button>`;
+      });
+      container.innerHTML = html;
+      
+      // Re-attach filter handlers
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          const filter = btn.getAttribute('data-filter');
+          document.querySelectorAll('.project-card').forEach(card => {
+            if (filter === 'all' || card.getAttribute('data-category') === filter) {
+              card.style.display = 'block';
+            } else {
+              card.style.display = 'none';
+            }
+          });
+        });
+      });
+    }
+    
+    // Firebase sync
+    function syncProjectsFromFirebase(data) {
+      if (data) {
+        try {
+          localStorage.setItem('nexon_projects', JSON.stringify(data));
+          if (!projectsData) {
+            projectsData = data;
+            extractCategories();
+            renderProjects();
+            renderCategoryFilters();
+          }
+        } catch(e) {}
+      }
+    }
+    
+    // Run on load
+    setTimeout(() => {
+      renderProjects();
+      try {
+        if (typeof syncWithFirebase === 'function') {
+          syncWithFirebase('projects', syncProjectsFromFirebase);
+        }
+      } catch(e) {}
+    }, 800);
   </script>
 
 </body>
